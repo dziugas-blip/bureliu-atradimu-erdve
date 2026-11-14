@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BureliaiIndexRouteImport } from './routes/bureliai.index'
+import { Route as BureliaiIdRouteImport } from './routes/bureliai.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,30 +23,39 @@ const BureliaiIndexRoute = BureliaiIndexRouteImport.update({
   path: '/bureliai/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BureliaiIdRoute = BureliaiIdRouteImport.update({
+  id: '/bureliai/$id',
+  path: '/bureliai/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bureliai/$id': typeof BureliaiIdRoute
   '/bureliai/': typeof BureliaiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bureliai/$id': typeof BureliaiIdRoute
   '/bureliai': typeof BureliaiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bureliai/$id': typeof BureliaiIdRoute
   '/bureliai/': typeof BureliaiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bureliai/'
+  fullPaths: '/' | '/bureliai/$id' | '/bureliai/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bureliai'
-  id: '__root__' | '/' | '/bureliai/'
+  to: '/' | '/bureliai/$id' | '/bureliai'
+  id: '__root__' | '/' | '/bureliai/$id' | '/bureliai/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BureliaiIdRoute: typeof BureliaiIdRoute
   BureliaiIndexRoute: typeof BureliaiIndexRoute
 }
 
@@ -65,11 +75,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BureliaiIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bureliai/$id': {
+      id: '/bureliai/$id'
+      path: '/bureliai/$id'
+      fullPath: '/bureliai/$id'
+      preLoaderRoute: typeof BureliaiIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BureliaiIdRoute: BureliaiIdRoute,
   BureliaiIndexRoute: BureliaiIndexRoute,
 }
 export const routeTree = rootRouteImport
