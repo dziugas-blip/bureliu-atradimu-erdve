@@ -37,7 +37,7 @@ function FilterSelect({ label, value, allLabel, options, onChange, disabled }: F
       <label htmlFor={id} className="px-1 text-xs font-semibold text-muted-foreground">
         {label}
       </label>
-      <Select value={value} onValueChange={onChange} disabled={disabled}>
+      <Select value={value} onValueChange={onChange} disabled={!!disabled}>
         <SelectTrigger id={id} className="h-11 rounded-lg bg-background font-medium">
           <SelectValue />
         </SelectTrigger>
