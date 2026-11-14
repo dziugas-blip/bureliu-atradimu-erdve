@@ -10,6 +10,15 @@ const STYLES: Record<Category, string> = {
   Kalbos: "bg-cat-lang/12 text-cat-lang",
 };
 
+const DOT: Record<Category, string> = {
+  Šokiai: "bg-cat-dance",
+  Sportas: "bg-cat-sport",
+  Menai: "bg-cat-art",
+  "IT ir robotika": "bg-cat-tech",
+  Muzika: "bg-cat-music",
+  Kalbos: "bg-cat-lang",
+};
+
 export function CategoryBadge({
   category,
   solid,
@@ -28,7 +37,7 @@ export function CategoryBadge({
       )}
     >
       {solid && (
-        <span className={cn("mr-1.5 size-1.5 rounded-full", STYLES[category].split(" ")[1].replace("text-", "bg-"))} />
+        <span className={cn("mr-1.5 size-1.5 rounded-full", DOT[category])} />
       )}
       {category}
     </span>

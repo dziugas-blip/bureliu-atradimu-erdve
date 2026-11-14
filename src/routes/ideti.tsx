@@ -117,7 +117,7 @@ function parseSchedule(text: string): ScheduleSlot[] {
     .filter(Boolean)
     .map((line) => {
       const [day, ...rest] = line.split(/\s+/);
-      return { day, time: rest.join(" ") || "—" };
+      return { day: day ?? "", time: rest.join(" ") || "—" };
     });
 }
 
@@ -130,11 +130,11 @@ function Field({
   className,
 }: {
   label: string;
-  htmlFor?: string;
-  error?: string;
-  hint?: string;
+  htmlFor?: string | undefined;
+  error?: string | undefined;
+  hint?: string | undefined;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }) {
   return (
     <div className={cn("space-y-1.5", className)}>
@@ -226,7 +226,7 @@ function AddListing() {
       return;
     }
     const d = parsed.data;
-    const firstSentence = d.description.split(/(?<=[.!?])\s/)[0];
+    const firstSentence = d.description.split(/(?<=[.!?])\s/)[0] ?? d.description;
     const created = addListing({
       title: d.title,
       city: d.city as City,
