@@ -50,7 +50,7 @@ export function Header() {
             <SheetHeader>
               <SheetTitle className="text-left">Meniu</SheetTitle>
             </SheetHeader>
-            <nav className="mt-4 flex flex-col gap-1 px-4" onClick={() => setOpen(false)}>
+            <nav className="mt-6 flex flex-col gap-1" onClick={() => setOpen(false)}>
               <Link to="/bureliai" search={{}} className={navLink}>
                 Visi būreliai
               </Link>
