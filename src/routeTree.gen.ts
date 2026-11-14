@@ -10,12 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as IdetiRouteImport } from './routes/ideti'
+import { Route as PrisijungtiRouteImport } from './routes/prisijungti'
 import { Route as BureliaiIndexRouteImport } from './routes/bureliai.index'
 import { Route as BureliaiIdRouteImport } from './routes/bureliai.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IdetiRoute = IdetiRouteImport.update({
+  id: '/ideti',
+  path: '/ideti',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrisijungtiRoute = PrisijungtiRouteImport.update({
+  id: '/prisijungti',
+  path: '/prisijungti',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BureliaiIndexRoute = BureliaiIndexRouteImport.update({
@@ -31,30 +43,44 @@ const BureliaiIdRoute = BureliaiIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ideti': typeof IdetiRoute
+  '/prisijungti': typeof PrisijungtiRoute
   '/bureliai/$id': typeof BureliaiIdRoute
   '/bureliai/': typeof BureliaiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ideti': typeof IdetiRoute
+  '/prisijungti': typeof PrisijungtiRoute
   '/bureliai/$id': typeof BureliaiIdRoute
   '/bureliai': typeof BureliaiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ideti': typeof IdetiRoute
+  '/prisijungti': typeof PrisijungtiRoute
   '/bureliai/$id': typeof BureliaiIdRoute
   '/bureliai/': typeof BureliaiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bureliai/$id' | '/bureliai/'
+  fullPaths: '/' | '/ideti' | '/prisijungti' | '/bureliai/$id' | '/bureliai/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bureliai/$id' | '/bureliai'
-  id: '__root__' | '/' | '/bureliai/$id' | '/bureliai/'
+  to: '/' | '/ideti' | '/prisijungti' | '/bureliai/$id' | '/bureliai'
+  id:
+    | '__root__'
+    | '/'
+    | '/ideti'
+    | '/prisijungti'
+    | '/bureliai/$id'
+    | '/bureliai/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  IdetiRoute: typeof IdetiRoute
+  PrisijungtiRoute: typeof PrisijungtiRoute
   BureliaiIdRoute: typeof BureliaiIdRoute
   BureliaiIndexRoute: typeof BureliaiIndexRoute
 }
@@ -66,6 +92,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ideti': {
+      id: '/ideti'
+      path: '/ideti'
+      fullPath: '/ideti'
+      preLoaderRoute: typeof IdetiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prisijungti': {
+      id: '/prisijungti'
+      path: '/prisijungti'
+      fullPath: '/prisijungti'
+      preLoaderRoute: typeof PrisijungtiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bureliai/': {
@@ -87,6 +127,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  IdetiRoute: IdetiRoute,
+  PrisijungtiRoute: PrisijungtiRoute,
   BureliaiIdRoute: BureliaiIdRoute,
   BureliaiIndexRoute: BureliaiIndexRoute,
 }
