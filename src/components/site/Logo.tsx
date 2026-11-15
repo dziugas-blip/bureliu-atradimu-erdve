@@ -16,7 +16,7 @@ export function Logo() {
         </svg>
       </span>
       <span className="text-lg font-extrabold tracking-tight text-foreground">
-        Veiklų <span className="text-brand-gradient">Erdvė</span>
+        Veiklų <span className="text-brand-gradient">Pasaulis</span>
       </span>
     </Link>
   );
