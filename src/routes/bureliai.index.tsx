@@ -10,13 +10,13 @@ export const Route = createFileRoute("/bureliai/")({
   validateSearch: zodValidator(filtersSearchSchema),
   head: () => ({
     meta: [
-      { title: "Visos veiklos – Veiklų Erdvė" },
+      { title: "Visos veiklos – Veiklų Pasaulis" },
       {
         name: "description",
         content:
           "Visos veiklos vaikams ir suaugusiems: filtruokite pagal miestą, mikrorajoną, amžių, lytį ir kategoriją.",
       },
-      { property: "og:title", content: "Visos veiklos – Veiklų Erdvė" },
+      { property: "og:title", content: "Visos veiklos – Veiklų Pasaulis" },
       {
         property: "og:description",
         content: "Filtruokite veiklas pagal miestą, mikrorajoną, amžių, lytį ir kategoriją.",

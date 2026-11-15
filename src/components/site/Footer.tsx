@@ -42,7 +42,7 @@ export function Footer() {
       </div>
       <div className="border-t">
         <p className="container-page py-5 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Veiklų Erdvė. Visos teisės saugomos.
+          © {new Date().getFullYear()} Veiklų Pasaulis. Visos teisės saugomos.
         </p>
       </div>
     </footer>

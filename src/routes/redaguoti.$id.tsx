@@ -6,7 +6,7 @@ import { useListings } from "@/lib/listings-store";
 
 export const Route = createFileRoute("/redaguoti/$id")({
   head: () => ({
-    meta: [{ title: "Redaguoti veiklą – Veiklų Erdvė" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Redaguoti veiklą – Veiklų Pasaulis" }, { name: "robots", content: "noindex" }],
   }),
   component: EditListing,
 });

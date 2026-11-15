@@ -19,7 +19,7 @@ import {
 export const Route = createFileRoute("/profilis")({
   head: () => ({
     meta: [
-      { title: "Mano profilis – Veiklų Erdvė" },
+      { title: "Mano profilis – Veiklų Pasaulis" },
       { name: "description", content: "Veiklų vadovo profilio redagavimas." },
       { name: "robots", content: "noindex" },
     ],

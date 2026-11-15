@@ -18,9 +18,9 @@ export const Route = createFileRoute("/prisijungti")({
   ),
   head: () => ({
     meta: [
-      { title: "Prisijungti arba registruotis – Veiklų Erdvė" },
+      { title: "Prisijungti arba registruotis – Veiklų Pasaulis" },
       { name: "description", content: "Veiklų vadovų prisijungimas ir registracija." },
-      { property: "og:title", content: "Prisijungti arba registruotis – Veiklų Erdvė" },
+      { property: "og:title", content: "Prisijungti arba registruotis – Veiklų Pasaulis" },
       { property: "og:description", content: "Veiklų vadovų prisijungimas ir registracija." },
       { name: "robots", content: "noindex" },
     ],

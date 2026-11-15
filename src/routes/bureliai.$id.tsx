@@ -13,8 +13,8 @@ export const Route = createFileRoute("/bureliai/$id")({
   },
   head: ({ loaderData }) => {
     const title = loaderData?.title
-      ? `${loaderData.title} – Veiklų Erdvė`
-      : "Veikla – Veiklų Erdvė";
+      ? `${loaderData.title} – Veiklų Pasaulis`
+      : "Veikla – Veiklų Pasaulis";
     const description =
       loaderData?.summary ?? "Veiklos aprašymas, tvarkaraštis, kaina ir kontaktai.";
     return {

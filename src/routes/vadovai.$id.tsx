@@ -10,7 +10,7 @@ import { LOCAL_ORGANIZER_ID, organizerIdOf, useProfile } from "@/lib/profile-sto
 export const Route = createFileRoute("/vadovai/$id")({
   head: () => ({
     meta: [
-      { title: "Veiklų vadovas – Veiklų Erdvė" },
+      { title: "Veiklų vadovas – Veiklų Pasaulis" },
       { name: "description", content: "Veiklų vadovo aprašymas ir jo vedamos veiklos." },
     ],
   }),
