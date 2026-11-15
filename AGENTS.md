@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Organiser sign-in goes through `src/lib/auth-store.ts` (Lovable Cloud auth: Google via the `lovable` broker, email + password via Supabase). Components use its hooks (`useSignedIn`, `useAuthReady`) and never call auth APIs directly, so the auth provider can change in one place.
+- Pages that need a signed-in organiser wait for `useAuthReady()` before showing the sign-in prompt, because the stored session is read asynchronously in the browser.
