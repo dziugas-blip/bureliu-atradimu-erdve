@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { toast } from "sonner";
 import { signIn } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 
@@ -7,17 +9,28 @@ interface GoogleSignInButtonProps {
   className?: string;
 }
 
-/** Signs the organiser in. Simulated for now: see `auth-store.ts`. */
+/** Signs the organiser in with their Google account. */
 export function GoogleSignInButton({ onSignedIn, className }: GoogleSignInButtonProps) {
+  const [pending, setPending] = useState(false);
+
+  async function onClick() {
+    setPending(true);
+    const result = await signIn({ provider: "google" });
+    // When the browser leaves for Google, keep the button disabled until it does.
+    if (result.redirected) return;
+    setPending(false);
+    if (result.error) toast.error(result.error);
+    else onSignedIn?.();
+  }
+
   return (
     <button
       type="button"
-      onClick={() => {
-        signIn();
-        onSignedIn?.();
-      }}
+      onClick={onClick}
+      disabled={pending}
+      aria-busy={pending}
       className={cn(
-        "inline-flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-lg border bg-background px-4 text-sm font-semibold shadow-sm outline-none transition-colors hover:border-foreground/60 hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring",
+        "inline-flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-lg border bg-background px-4 text-sm font-semibold shadow-sm outline-none transition-colors hover:border-foreground/60 hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-wait disabled:opacity-70",
         className,
       )}
     >

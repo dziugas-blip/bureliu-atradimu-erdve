@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useSignedIn } from "@/lib/auth-store";
+import { useAuthReady, useSignedIn } from "@/lib/auth-store";
 import { fileToResizedDataUrl } from "@/lib/image-resize";
 import { MyListings } from "@/components/site/MyListings";
-import { useHydrated } from "@/lib/listings-store";
 import {
   LOCAL_ORGANIZER_ID,
   saveProfile,
@@ -30,7 +29,7 @@ export const Route = createFileRoute("/profilis")({
 
 function EditProfile() {
   const signedIn = useSignedIn();
-  const hydrated = useHydrated();
+  const ready = useAuthReady();
   const stored = useProfile();
   const [draft, setDraft] = useState<OrganizerProfile>(stored);
   const [nameError, setNameError] = useState<string>();
@@ -72,7 +71,7 @@ function EditProfile() {
     else toast.warning("Profilis neišsaugotas", { description: "Naršyklės atmintis pilna." });
   }
 
-  if (!hydrated) return <div className="min-h-[60vh] bg-hero-wash" />;
+  if (!ready) return <div className="min-h-[60vh] bg-hero-wash" />;
   if (!signedIn) {
     return (
       <div className="container-page flex flex-col items-center py-24 text-center">
