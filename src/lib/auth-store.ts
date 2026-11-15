@@ -73,7 +73,9 @@ export interface AuthResult {
 export type SignInMethod = { provider: "google" } | { email: string; password: string };
 
 /** Turns an auth error into a message an organiser understands. */
-export function authErrorMessage(error: { message?: string; code?: string } | null): string {
+export function authErrorMessage(
+  error: { message?: string | undefined; code?: string | undefined } | null,
+): string {
   const text = `${error?.code ?? ""} ${error?.message ?? ""}`.toLowerCase();
   if (text.includes("invalid_credentials") || text.includes("invalid login"))
     return "Neteisingas el. paštas arba slaptažodis.";
