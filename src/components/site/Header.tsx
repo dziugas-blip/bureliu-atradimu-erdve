@@ -61,7 +61,7 @@ export function Header() {
                   <UserRound /> Mano profilis
                 </Link>
               </Button>
-              <Button variant="outline" onClick={signOut}>
+              <Button variant="outline" onClick={() => void signOut()}>
                 <LogOut /> Atsijungti
               </Button>
             </>
@@ -117,7 +117,7 @@ export function Header() {
                         <UserRound /> Mano profilis
                       </Link>
                     </Button>
-                    <Button variant="outline" onClick={signOut}>
+                    <Button variant="outline" onClick={() => void signOut()}>
                       <LogOut /> Atsijungti
                     </Button>
                   </>
