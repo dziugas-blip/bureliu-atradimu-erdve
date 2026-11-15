@@ -14,12 +14,12 @@ import {
   ALL,
   AUDIENCES,
   CATEGORIES,
-  CITIES,
   DEFAULT_FILTERS,
   GENDERS,
-  VILNIUS_DISTRICTS,
   type Filters,
 } from "@/lib/listings";
+import { districtsOf } from "@/lib/places";
+import { PlaceCombobox } from "./PlaceCombobox";
 
 interface FieldProps {
   label: string;
@@ -61,7 +61,7 @@ interface FilterBarProps {
 }
 
 export function FilterBar({ filters, onChange, className }: FilterBarProps) {
-  const districtEnabled = filters.city === ALL || filters.city === "Vilnius";
+  const districts = districtsOf(filters.city);
   const activeCount = (Object.keys(DEFAULT_FILTERS) as (keyof Filters)[]).filter(
     (k) => filters[k] !== DEFAULT_FILTERS[k],
   ).length;
@@ -89,26 +89,22 @@ export function FilterBar({ filters, onChange, className }: FilterBarProps) {
         </Button>
       </form>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-        <FilterSelect
-          label="Miestas"
-          value={filters.city}
-          allLabel="Visi miestai"
-          options={CITIES}
-          onChange={(city) =>
-            onChange(
-              city === ALL || city === "Vilnius" ? { city } : { city, district: ALL },
-            )
-          }
-        />
-        <FilterSelect
-          label="Mikrorajonas"
-          value={filters.district}
-          allLabel="Visi"
-          options={VILNIUS_DISTRICTS}
-          onChange={(district) => onChange({ district })}
-          disabled={!districtEnabled}
-        />
+      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+        <div className="col-span-2 flex min-w-0 flex-col gap-1.5 md:col-span-1">
+          <label
+            htmlFor="filter-place"
+            className="px-1 text-xs font-semibold text-muted-foreground"
+          >
+            Miestas ar gyvenvietė
+          </label>
+          <PlaceCombobox
+            id="filter-place"
+            value={filters.city}
+            allLabel="Visa Lietuva"
+            onChange={(city) => onChange({ city, district: ALL })}
+            className="h-11 rounded-lg font-medium"
+          />
+        </div>
         <FilterSelect
           label="Auditorija"
           value={filters.audience}
@@ -138,6 +134,38 @@ export function FilterBar({ filters, onChange, className }: FilterBarProps) {
           onChange={(category) => onChange({ category })}
         />
       </div>
+
+      {districts.length > 0 && (
+        <div className="mt-4" role="group" aria-labelledby="filter-districts-label">
+          <p
+            id="filter-districts-label"
+            className="px-1 text-xs font-semibold text-muted-foreground"
+          >
+            Mikrorajonas ({filters.city})
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {[ALL, ...districts].map((d) => {
+              const active = filters.district === d;
+              return (
+                <button
+                  key={d}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => onChange({ district: d })}
+                  className={cn(
+                    "inline-flex h-9 cursor-pointer items-center rounded-full border px-3.5 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    active
+                      ? "border-primary bg-primary-soft text-primary"
+                      : "bg-background text-muted-foreground hover:border-foreground/60 hover:bg-secondary hover:text-foreground",
+                  )}
+                >
+                  {d === ALL ? "Visi mikrorajonai" : d}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {activeCount > 0 && (
         <div className="mt-4 flex items-center justify-between border-t pt-3 text-sm">

@@ -36,9 +36,7 @@ export function CategoryBadge({
         className,
       )}
     >
-      {solid && (
-        <span className={cn("mr-1.5 size-1.5 rounded-full", DOT[category])} />
-      )}
+      {solid && <span className={cn("mr-1.5 size-1.5 rounded-full", DOT[category])} />}
       {category}
     </span>
   );

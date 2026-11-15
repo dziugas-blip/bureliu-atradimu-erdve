@@ -10,16 +10,16 @@ export const Route = createFileRoute("/bureliai/")({
   validateSearch: zodValidator(filtersSearchSchema),
   head: () => ({
     meta: [
-      { title: "Visi būreliai – Būrelių Erdvė" },
+      { title: "Visos veiklos – Veiklų Erdvė" },
       {
         name: "description",
         content:
-          "Visi būreliai vaikams ir suaugusiems: filtruokite pagal miestą, mikrorajoną, amžių, lytį ir kategoriją.",
+          "Visos veiklos vaikams ir suaugusiems: filtruokite pagal miestą, mikrorajoną, amžių, lytį ir kategoriją.",
       },
-      { property: "og:title", content: "Visi būreliai – Būrelių Erdvė" },
+      { property: "og:title", content: "Visos veiklos – Veiklų Erdvė" },
       {
         property: "og:description",
-        content: "Filtruokite būrelius pagal miestą, mikrorajoną, amžių, lytį ir kategoriją.",
+        content: "Filtruokite veiklas pagal miestą, mikrorajoną, amžių, lytį ir kategoriją.",
       },
     ],
   }),
@@ -37,9 +37,9 @@ function AllListings() {
 
   return (
     <div className="container-page pt-10">
-      <h1 className="text-3xl font-extrabold sm:text-4xl">Visi būreliai</h1>
+      <h1 className="text-3xl font-extrabold sm:text-4xl">Visos veiklos</h1>
       <p className="mt-2 text-muted-foreground">
-        Rasta būrelių: <strong className="text-foreground">{results.length}</strong>
+        Rasta veiklų: <strong className="text-foreground">{results.length}</strong>
       </p>
       <FilterBar filters={filters} onChange={update} className="mt-6 shadow-card" />
       <div className="mt-10">

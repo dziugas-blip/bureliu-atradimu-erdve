@@ -82,16 +82,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Būrelių Erdvė – būreliai vaikams ir suaugusiems" },
+      { title: "Veiklų Erdvė – veiklos vaikams ir suaugusiems" },
       {
         name: "description",
-        content: "Raskite geriausius būrelius vaikams ir suaugusiems Vilniuje ir visoje Lietuvoje.",
+        content: "Raskite geriausias veiklas vaikams ir suaugusiems Vilniuje ir visoje Lietuvoje.",
       },
-      { name: "author", content: "Būrelių Erdvė" },
-      { property: "og:title", content: "Būrelių Erdvė – būreliai vaikams ir suaugusiems" },
+      { name: "author", content: "Veiklų Erdvė" },
+      { property: "og:title", content: "Veiklų Erdvė – veiklos vaikams ir suaugusiems" },
       {
         property: "og:description",
-        content: "Raskite geriausius būrelius vaikams ir suaugusiems Vilniuje ir visoje Lietuvoje.",
+        content: "Raskite geriausias veiklas vaikams ir suaugusiems Vilniuje ir visoje Lietuvoje.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "lt_LT" },

@@ -10,10 +10,9 @@ export function ListingsGrid({ listings, onReset }: { listings: Listing[]; onRes
         <span className="grid size-12 place-items-center rounded-full bg-primary-soft text-primary">
           <SearchX className="size-6" />
         </span>
-        <h3 className="mt-4 text-lg font-bold">Būrelių nerasta</h3>
+        <h3 className="mt-4 text-lg font-bold">Veiklų nerasta</h3>
         <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-          Pabandykite pakeisti filtrus arba paieškos žodį. Kituose miestuose būrelių dar tik
-          daugėja.
+          Pabandykite pakeisti filtrus arba paieškos žodį. Kituose miestuose veiklų dar tik daugėja.
         </p>
         <Button variant="outline" className="mt-5" onClick={onReset}>
           Išvalyti filtrus

@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
-import { ArrowRight, CheckCircle2, MapPin, Plus } from "lucide-react";
+import { ArrowRight, CheckCircle2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FilterBar } from "@/components/site/FilterBar";
 import { ListingsGrid } from "@/components/site/ListingsGrid";
-import { DEFAULT_FILTERS, filterListings, type Filters } from "@/lib/listings";
+import { ALL, DEFAULT_FILTERS, filterListings, type Filters } from "@/lib/listings";
 import { useListings } from "@/lib/listings-store";
 import { filtersSearchSchema } from "@/lib/search-schema";
 
@@ -12,16 +12,16 @@ export const Route = createFileRoute("/")({
   validateSearch: zodValidator(filtersSearchSchema),
   head: () => ({
     meta: [
-      { title: "Būrelių Erdvė – rask geriausius būrelius Vilniuje" },
+      { title: "Veiklų Erdvė – rask geriausias veiklas Vilniuje" },
       {
         name: "description",
         content:
-          "Šokiai, sportas, menai, robotika, muzika ir kalbos. Palyginkite būrelius vaikams ir suaugusiems pagal mikrorajoną, amžių ir kainą.",
+          "Šokiai, sportas, menai, robotika, muzika ir kalbos. Palyginkite veiklas vaikams ir suaugusiems pagal mikrorajoną, amžių ir kainą.",
       },
-      { property: "og:title", content: "Būrelių Erdvė – rask geriausius būrelius Vilniuje" },
+      { property: "og:title", content: "Veiklų Erdvė – rask geriausias veiklas Vilniuje" },
       {
         property: "og:description",
-        content: "Palyginkite būrelius vaikams ir suaugusiems pagal mikrorajoną, amžių ir kainą.",
+        content: "Palyginkite veiklas vaikams ir suaugusiems pagal mikrorajoną, amžių ir kainą.",
       },
     ],
   }),
@@ -42,16 +42,12 @@ function Index() {
       <section className="bg-hero-wash">
         <div className="container-page pb-12 pt-12 sm:pt-16 lg:pb-16 lg:pt-20">
           <div className="mx-auto max-w-3xl text-center animate-fade-up">
-            <span className="inline-flex items-center gap-1.5 rounded-full border bg-background/80 px-3 py-1 text-xs font-semibold text-muted-foreground shadow-sm">
-              <MapPin className="size-3.5 text-teal" /> Pradedame nuo Vilniaus
-            </span>
-            <h1 className="mt-5 text-4xl font-extrabold leading-[1.08] text-foreground sm:text-5xl lg:text-6xl">
-              Rask geriausius būrelius{" "}
+            <h1 className="text-4xl font-extrabold leading-[1.08] text-foreground sm:text-5xl lg:text-6xl">
+              Rask geriausias veiklas{" "}
               <span className="text-brand-gradient">vaikams ir suaugusiems</span>
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
-              Šokiai, sportas, menai, robotika, muzika ir kalbos – vienoje vietoje, šalia jūsų
-              namų.
+              Šokiai, sportas, menai, robotika, muzika ir kalbos – vienoje vietoje.
             </p>
           </div>
           <FilterBar
@@ -65,9 +61,11 @@ function Index() {
       <section className="container-page pt-6">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-extrabold sm:text-3xl">Būreliai Vilniuje</h2>
+            <h2 className="text-2xl font-extrabold sm:text-3xl">
+              {filters.city === ALL ? "Veiklos Lietuvoje" : `Veiklos: ${filters.city}`}
+            </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Rasta būrelių: <strong className="text-foreground">{results.length}</strong>
+              Rasta veiklų: <strong className="text-foreground">{results.length}</strong>
             </p>
           </div>
           <Button variant="ghost" asChild>
@@ -83,14 +81,14 @@ function Index() {
         <div className="relative overflow-hidden rounded-3xl bg-brand-gradient px-6 py-10 text-primary-foreground sm:px-12 sm:py-14">
           <div className="relative z-10 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
             <div>
-              <h2 className="text-3xl font-extrabold sm:text-4xl">Vadovaujate būreliui?</h2>
+              <h2 className="text-3xl font-extrabold sm:text-4xl">Organizuojate veiklą?</h2>
               <p className="mt-3 max-w-lg text-primary-foreground/85">
-                Įdėkite savo būrelį nemokamai ir leiskite tėvams bei suaugusiems jus lengvai
+                Įdėkite savo veiklą nemokamai ir leiskite tėvams bei suaugusiems jus lengvai
                 surasti.
               </p>
               <Button size="xl" variant="outline" className="mt-6 border-transparent text-foreground" asChild>
                 <Link to="/ideti">
-                  <Plus /> Įdėti būrelį
+                  <Plus /> Įdėti veiklą
                 </Link>
               </Button>
             </div>

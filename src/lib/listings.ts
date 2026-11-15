@@ -7,23 +7,43 @@ import english from "@/assets/listing-english.jpg";
 import contemporary from "@/assets/listing-contemporary.jpg";
 import football from "@/assets/listing-football.jpg";
 
-export const CITIES = ["Vilnius", "Kaunas", "Klaipėda", "Šiauliai", "Panevėžys"] as const;
-export const VILNIUS_DISTRICTS = [
-  "Antakalnis",
-  "Žvėrynas",
-  "Centras",
-  "Pašilaičiai",
-  "Šeškinė",
-  "Pilaitė",
-  "Fabijoniškės",
-  "Naujamiestis",
-] as const;
 export const AUDIENCES = ["Vaikams", "Suaugusiems"] as const;
 export const AGE_GROUPS = ["3-5 m.", "6-9 m.", "10-13 m.", "14-18 m.", "Suaugusiems"] as const;
 export const GENDERS = ["Berniukams", "Mergaitėms"] as const;
-export const CATEGORIES = ["Šokiai", "Sportas", "Menai", "IT ir robotika", "Muzika", "Kalbos"] as const;
+export const CATEGORIES = [
+  "Šokiai",
+  "Sportas",
+  "Menai",
+  "IT ir robotika",
+  "Muzika",
+  "Kalbos",
+] as const;
 
-export type City = (typeof CITIES)[number];
+/** Extras an organiser can tick. `short` is the badge text on listing cards. */
+export const PERKS = [
+  { id: "nvs", label: "Taikomas NVŠ krepšelis", short: "NVŠ krepšelis" },
+  { id: "trial", label: "Pirmas bandomasis užsiėmimas nemokamai", short: "Bandomasis nemokamai" },
+] as const;
+export type PerkId = (typeof PERKS)[number]["id"];
+
+/**
+ * Turns what an organiser typed ("facebook.com/klubas") into a safe link, or null if it is not
+ * a web address. Only http(s) is allowed, so a "javascript:" value can never become a link.
+ */
+export function normalizeWebsite(input: string): string | null {
+  const value = input.trim();
+  if (!value) return null;
+  try {
+    const url = new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
+    const isWeb = url.protocol === "http:" || url.protocol === "https:";
+    return isWeb && url.hostname.includes(".") ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+/** A city, town or village name from `places.ts`. */
+export type City = string;
 export type Category = (typeof CATEGORIES)[number];
 export type AgeGroup = (typeof AGE_GROUPS)[number];
 export type Audience = (typeof AUDIENCES)[number] | "Visiems";
@@ -38,8 +58,12 @@ export interface Listing {
   id: string;
   title: string;
   city: City;
+  /** Microdistrict. Empty when the place has none. */
   district: string;
   address: string;
+  /** Map position. Sample listings carry approximate coordinates; user-added ones have none. */
+  lat?: number;
+  lng?: number;
   category: Category;
   audience: Audience;
   ages: AgeGroup[];
@@ -48,10 +72,19 @@ export interface Listing {
   shortDescription: string;
   description: string;
   schedule: ScheduleSlot[];
+  /** No fixed timetable: times are agreed with each participant. */
+  scheduleFlexible?: boolean;
+  /** Set on listings added by a signed-in organiser. See `organizerIdOf`. */
+  organizerId?: string;
   contactName: string;
   phone: string;
   email: string;
+  perks?: PerkId[];
+  /** Website or social profile, already normalised to an http(s) URL. */
+  website?: string;
   image?: string;
+  /** Photos uploaded by the owner, as data URLs. The first one is the cover. */
+  photos?: string[];
   userSubmitted?: boolean;
 }
 
@@ -87,7 +120,7 @@ export const CATEGORY_IMAGES: Record<Category, string> = {
 };
 
 export function listingImage(listing: Listing): string {
-  return listing.image ?? CATEGORY_IMAGES[listing.category];
+  return listing.photos?.[0] ?? listing.image ?? CATEGORY_IMAGES[listing.category];
 }
 
 /** Lowercase and strip Lithuanian diacritics so "sokiai" finds "Šokiai". */
@@ -127,10 +160,13 @@ export function formatPrice(price: number): string {
 export const SAMPLE_LISTINGS: Listing[] = [
   {
     id: "baleto-studija-piruetas",
+    perks: ["nvs", "trial"],
     title: "Baleto studija „Piruetas“",
     city: "Vilnius",
     district: "Žvėrynas",
     address: "Vytauto g. 12, Vilnius",
+    lat: 54.6905,
+    lng: 25.252,
     category: "Šokiai",
     audience: "Vaikams",
     ages: ["3-5 m.", "6-9 m."],
@@ -151,10 +187,13 @@ export const SAMPLE_LISTINGS: Listing[] = [
   },
   {
     id: "krepsinio-akademija-taiklus-metimas",
+    perks: ["nvs"],
     title: "Krepšinio akademija „Taiklus metimas“",
     city: "Vilnius",
     district: "Antakalnis",
     address: "Antakalnio g. 45, Vilnius",
+    lat: 54.701,
+    lng: 25.312,
     category: "Sportas",
     audience: "Vaikams",
     ages: ["10-13 m.", "14-18 m."],
@@ -174,10 +213,13 @@ export const SAMPLE_LISTINGS: Listing[] = [
   },
   {
     id: "robotikos-klubas-robolab",
+    perks: ["nvs"],
     title: "Robotikos klubas „RoboLab“",
     city: "Vilnius",
     district: "Naujamiestis",
     address: "Naugarduko g. 34, Vilnius",
+    lat: 54.676,
+    lng: 25.268,
     category: "IT ir robotika",
     audience: "Vaikams",
     ages: ["10-13 m.", "14-18 m."],
@@ -201,6 +243,8 @@ export const SAMPLE_LISTINGS: Listing[] = [
     city: "Vilnius",
     district: "Centras",
     address: "Pylimo g. 21, Vilnius",
+    lat: 54.68,
+    lng: 25.279,
     category: "Menai",
     audience: "Vaikams",
     ages: ["3-5 m.", "6-9 m."],
@@ -224,6 +268,8 @@ export const SAMPLE_LISTINGS: Listing[] = [
     city: "Vilnius",
     district: "Šeškinė",
     address: "Šeškinės g. 18, Vilnius",
+    lat: 54.713,
+    lng: 25.25,
     category: "Muzika",
     audience: "Suaugusiems",
     ages: ["Suaugusiems"],
@@ -247,6 +293,8 @@ export const SAMPLE_LISTINGS: Listing[] = [
     city: "Vilnius",
     district: "Pašilaičiai",
     address: "S. Nėries g. 57, Vilnius",
+    lat: 54.728,
+    lng: 25.233,
     category: "Kalbos",
     audience: "Vaikams",
     ages: ["14-18 m."],
@@ -266,10 +314,13 @@ export const SAMPLE_LISTINGS: Listing[] = [
   },
   {
     id: "siuolaikiniu-sokiu-studija-ritmas",
+    perks: ["trial"],
     title: "Šiuolaikinių šokių studija „Ritmas“",
     city: "Vilnius",
     district: "Fabijoniškės",
     address: "Fabijoniškių g. 7, Vilnius",
+    lat: 54.733,
+    lng: 25.248,
     category: "Šokiai",
     audience: "Suaugusiems",
     ages: ["Suaugusiems"],
@@ -289,10 +340,13 @@ export const SAMPLE_LISTINGS: Listing[] = [
   },
   {
     id: "futbolo-mokykla-pilaites-zaibas",
+    perks: ["nvs"],
     title: "Futbolo mokykla „Pilaitės Žaibas“",
     city: "Vilnius",
     district: "Pilaitė",
     address: "Pilaitės pr. 14, Vilnius",
+    lat: 54.708,
+    lng: 25.183,
     category: "Sportas",
     audience: "Vaikams",
     ages: ["6-9 m.", "10-13 m."],

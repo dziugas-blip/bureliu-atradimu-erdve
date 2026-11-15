@@ -2,7 +2,12 @@ import { Link } from "@tanstack/react-router";
 
 export function Logo() {
   return (
-    <Link to="/" search={{}} className="flex items-center gap-2.5" aria-label="Būrelių Erdvė – pradžia">
+    <Link
+      to="/"
+      search={{}}
+      className="flex items-center gap-2.5"
+      aria-label="Veiklų Erdvė – pradžia"
+    >
       <span className="grid size-9 place-items-center rounded-xl bg-brand-gradient text-primary-foreground shadow-sm">
         <svg viewBox="0 0 24 24" className="size-5" fill="none" aria-hidden="true">
           <circle cx="8" cy="8" r="3.2" fill="currentColor" />
@@ -11,7 +16,7 @@ export function Logo() {
         </svg>
       </span>
       <span className="text-lg font-extrabold tracking-tight text-foreground">
-        Būrelių <span className="text-brand-gradient">Erdvė</span>
+        Veiklų <span className="text-brand-gradient">Erdvė</span>
       </span>
     </Link>
   );

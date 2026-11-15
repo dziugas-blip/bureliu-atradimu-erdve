@@ -50,7 +50,7 @@ export function InquiryForm({ listingTitle }: { listingTitle: string }) {
     setErrors({});
     setSent(true);
     toast.success("Užklausa išsiųsta!", {
-      description: "Būrelio vadovas susisieks su jumis artimiausiu metu.",
+      description: "Veiklos vadovas susisieks su jumis artimiausiu metu.",
     });
   }
 
@@ -60,7 +60,7 @@ export function InquiryForm({ listingTitle }: { listingTitle: string }) {
         <CheckCircle2 className="mx-auto size-8 text-teal" />
         <p className="mt-2 font-bold">Ačiū, užklausa išsiųsta!</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          Būrelio vadovas atsakys nurodytu el. paštu.
+          Veiklos vadovas atsakys nurodytu el. paštu.
         </p>
         <Button
           variant="ghost"
@@ -99,7 +99,7 @@ export function InquiryForm({ listingTitle }: { listingTitle: string }) {
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="inq-phone">
-          Telefonas <span className="font-normal text-muted-foreground">(neprivaloma)</span>
+          Telefonas <span className="font-normal text-muted-foreground">(rekomenduojame)</span>
         </Label>
         <Input {...field("phone")} type="tel" autoComplete="tel" maxLength={30} />
         {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}

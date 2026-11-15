@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { LifeBuoy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
 
 export function Footer() {
@@ -8,34 +10,39 @@ export function Footer() {
         <div className="max-w-sm space-y-3">
           <Logo />
           <p className="text-sm text-muted-foreground">
-            Būrelių katalogas vaikams ir suaugusiems visoje Lietuvoje. Pradedame nuo Vilniaus.
+            Veiklų katalogas vaikams ir suaugusiems visoje Lietuvoje.
           </p>
         </div>
-        <div className="flex gap-12 text-sm">
+        <div className="flex flex-wrap items-start gap-x-12 gap-y-6 text-sm">
+          <div className="space-y-2">
+            <p className="font-semibold">Kilo klausimų?</p>
+            <Button size="lg" asChild>
+              <Link to="/pagalba">
+                <LifeBuoy /> Pagalba
+              </Link>
+            </Button>
+          </div>
           <div className="space-y-2">
             <p className="font-semibold">Ieškantiems</p>
-            <Link to="/bureliai" search={{}} className="block text-muted-foreground hover:text-foreground">
-              Visi būreliai
+            <Link
+              to="/bureliai"
+              search={{}}
+              className="block text-muted-foreground hover:text-foreground"
+            >
+              Visos veiklos
             </Link>
           </div>
           <div className="space-y-2">
-            <p className="font-semibold">Būrelių vadovams</p>
+            <p className="font-semibold">Veiklų vadovams</p>
             <Link to="/ideti" className="block text-muted-foreground hover:text-foreground">
-              Įdėti būrelį
-            </Link>
-            <Link
-              to="/prisijungti"
-              search={{ tab: "registruotis" }}
-              className="block text-muted-foreground hover:text-foreground"
-            >
-              Registruotis
+              Įdėti veiklą
             </Link>
           </div>
         </div>
       </div>
       <div className="border-t">
         <p className="container-page py-5 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Būrelių Erdvė. Visos teisės saugomos.
+          © {new Date().getFullYear()} Veiklų Erdvė. Visos teisės saugomos.
         </p>
       </div>
     </footer>

@@ -11,9 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as IdetiRouteImport } from './routes/ideti'
+import { Route as MegstamiRouteImport } from './routes/megstami'
+import { Route as PagalbaRouteImport } from './routes/pagalba'
 import { Route as PrisijungtiRouteImport } from './routes/prisijungti'
+import { Route as ProfilisRouteImport } from './routes/profilis'
+import { Route as TinklarastisRouteImport } from './routes/tinklarastis'
+import { Route as ZemelapisRouteImport } from './routes/zemelapis'
 import { Route as BureliaiIndexRouteImport } from './routes/bureliai.index'
 import { Route as BureliaiIdRouteImport } from './routes/bureliai.$id'
+import { Route as RedaguotiIdRouteImport } from './routes/redaguoti.$id'
+import { Route as VadovaiIdRouteImport } from './routes/vadovai.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,9 +32,34 @@ const IdetiRoute = IdetiRouteImport.update({
   path: '/ideti',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MegstamiRoute = MegstamiRouteImport.update({
+  id: '/megstami',
+  path: '/megstami',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PagalbaRoute = PagalbaRouteImport.update({
+  id: '/pagalba',
+  path: '/pagalba',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrisijungtiRoute = PrisijungtiRouteImport.update({
   id: '/prisijungti',
   path: '/prisijungti',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilisRoute = ProfilisRouteImport.update({
+  id: '/profilis',
+  path: '/profilis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TinklarastisRoute = TinklarastisRouteImport.update({
+  id: '/tinklarastis',
+  path: '/tinklarastis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZemelapisRoute = ZemelapisRouteImport.update({
+  id: '/zemelapis',
+  path: '/zemelapis',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BureliaiIndexRoute = BureliaiIndexRouteImport.update({
@@ -40,48 +72,117 @@ const BureliaiIdRoute = BureliaiIdRouteImport.update({
   path: '/bureliai/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RedaguotiIdRoute = RedaguotiIdRouteImport.update({
+  id: '/redaguoti/$id',
+  path: '/redaguoti/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VadovaiIdRoute = VadovaiIdRouteImport.update({
+  id: '/vadovai/$id',
+  path: '/vadovai/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ideti': typeof IdetiRoute
+  '/megstami': typeof MegstamiRoute
+  '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
+  '/profilis': typeof ProfilisRoute
+  '/tinklarastis': typeof TinklarastisRoute
+  '/zemelapis': typeof ZemelapisRoute
   '/bureliai/$id': typeof BureliaiIdRoute
+  '/redaguoti/$id': typeof RedaguotiIdRoute
+  '/vadovai/$id': typeof VadovaiIdRoute
   '/bureliai/': typeof BureliaiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ideti': typeof IdetiRoute
+  '/megstami': typeof MegstamiRoute
+  '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
+  '/profilis': typeof ProfilisRoute
+  '/tinklarastis': typeof TinklarastisRoute
+  '/zemelapis': typeof ZemelapisRoute
   '/bureliai/$id': typeof BureliaiIdRoute
+  '/redaguoti/$id': typeof RedaguotiIdRoute
+  '/vadovai/$id': typeof VadovaiIdRoute
   '/bureliai': typeof BureliaiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ideti': typeof IdetiRoute
+  '/megstami': typeof MegstamiRoute
+  '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
+  '/profilis': typeof ProfilisRoute
+  '/tinklarastis': typeof TinklarastisRoute
+  '/zemelapis': typeof ZemelapisRoute
   '/bureliai/$id': typeof BureliaiIdRoute
+  '/redaguoti/$id': typeof RedaguotiIdRoute
+  '/vadovai/$id': typeof VadovaiIdRoute
   '/bureliai/': typeof BureliaiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ideti' | '/prisijungti' | '/bureliai/$id' | '/bureliai/'
+  fullPaths:
+    | '/'
+    | '/ideti'
+    | '/megstami'
+    | '/pagalba'
+    | '/prisijungti'
+    | '/profilis'
+    | '/tinklarastis'
+    | '/zemelapis'
+    | '/bureliai/$id'
+    | '/redaguoti/$id'
+    | '/vadovai/$id'
+    | '/bureliai/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ideti' | '/prisijungti' | '/bureliai/$id' | '/bureliai'
+  to:
+    | '/'
+    | '/ideti'
+    | '/megstami'
+    | '/pagalba'
+    | '/prisijungti'
+    | '/profilis'
+    | '/tinklarastis'
+    | '/zemelapis'
+    | '/bureliai/$id'
+    | '/redaguoti/$id'
+    | '/vadovai/$id'
+    | '/bureliai'
   id:
     | '__root__'
     | '/'
     | '/ideti'
+    | '/megstami'
+    | '/pagalba'
     | '/prisijungti'
+    | '/profilis'
+    | '/tinklarastis'
+    | '/zemelapis'
     | '/bureliai/$id'
+    | '/redaguoti/$id'
+    | '/vadovai/$id'
     | '/bureliai/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   IdetiRoute: typeof IdetiRoute
+  MegstamiRoute: typeof MegstamiRoute
+  PagalbaRoute: typeof PagalbaRoute
   PrisijungtiRoute: typeof PrisijungtiRoute
+  ProfilisRoute: typeof ProfilisRoute
+  TinklarastisRoute: typeof TinklarastisRoute
+  ZemelapisRoute: typeof ZemelapisRoute
   BureliaiIdRoute: typeof BureliaiIdRoute
+  RedaguotiIdRoute: typeof RedaguotiIdRoute
+  VadovaiIdRoute: typeof VadovaiIdRoute
   BureliaiIndexRoute: typeof BureliaiIndexRoute
 }
 
@@ -101,11 +202,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IdetiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/megstami': {
+      id: '/megstami'
+      path: '/megstami'
+      fullPath: '/megstami'
+      preLoaderRoute: typeof MegstamiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pagalba': {
+      id: '/pagalba'
+      path: '/pagalba'
+      fullPath: '/pagalba'
+      preLoaderRoute: typeof PagalbaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/prisijungti': {
       id: '/prisijungti'
       path: '/prisijungti'
       fullPath: '/prisijungti'
       preLoaderRoute: typeof PrisijungtiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profilis': {
+      id: '/profilis'
+      path: '/profilis'
+      fullPath: '/profilis'
+      preLoaderRoute: typeof ProfilisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tinklarastis': {
+      id: '/tinklarastis'
+      path: '/tinklarastis'
+      fullPath: '/tinklarastis'
+      preLoaderRoute: typeof TinklarastisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zemelapis': {
+      id: '/zemelapis'
+      path: '/zemelapis'
+      fullPath: '/zemelapis'
+      preLoaderRoute: typeof ZemelapisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bureliai/': {
@@ -122,14 +258,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BureliaiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/redaguoti/$id': {
+      id: '/redaguoti/$id'
+      path: '/redaguoti/$id'
+      fullPath: '/redaguoti/$id'
+      preLoaderRoute: typeof RedaguotiIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vadovai/$id': {
+      id: '/vadovai/$id'
+      path: '/vadovai/$id'
+      fullPath: '/vadovai/$id'
+      preLoaderRoute: typeof VadovaiIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   IdetiRoute: IdetiRoute,
+  MegstamiRoute: MegstamiRoute,
+  PagalbaRoute: PagalbaRoute,
   PrisijungtiRoute: PrisijungtiRoute,
+  ProfilisRoute: ProfilisRoute,
+  TinklarastisRoute: TinklarastisRoute,
+  ZemelapisRoute: ZemelapisRoute,
   BureliaiIdRoute: BureliaiIdRoute,
+  RedaguotiIdRoute: RedaguotiIdRoute,
+  VadovaiIdRoute: VadovaiIdRoute,
   BureliaiIndexRoute: BureliaiIndexRoute,
 }
 export const routeTree = rootRouteImport
