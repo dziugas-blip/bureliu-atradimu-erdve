@@ -1,4 +1,4 @@
-# Bureliu Atradimu Erdve
+# Veiklu Pasaulis
 
 Create a modern, clean, and user-friendly directory website in Lithuanian language for finding extracurricular activities and clubs ("būreliai") for children and adults across Lithuania, starting with Vilnius. Use a temporary brand name "Būrelių Erdvė".
 

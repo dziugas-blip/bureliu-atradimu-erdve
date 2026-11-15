@@ -12,13 +12,13 @@ export const Route = createFileRoute("/")({
   validateSearch: zodValidator(filtersSearchSchema),
   head: () => ({
     meta: [
-      { title: "Veiklų Erdvė – rask geriausias veiklas Vilniuje" },
+      { title: "Veiklų Pasaulis – rask geriausias veiklas Vilniuje" },
       {
         name: "description",
         content:
           "Šokiai, sportas, menai, robotika, muzika ir kalbos. Palyginkite veiklas vaikams ir suaugusiems pagal mikrorajoną, amžių ir kainą.",
       },
-      { property: "og:title", content: "Veiklų Erdvė – rask geriausias veiklas Vilniuje" },
+      { property: "og:title", content: "Veiklų Pasaulis – rask geriausias veiklas Vilniuje" },
       {
         property: "og:description",
         content: "Palyginkite veiklas vaikams ir suaugusiems pagal mikrorajoną, amžių ir kainą.",

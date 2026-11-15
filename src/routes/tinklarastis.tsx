@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/tinklarastis")({
   head: () => ({
     meta: [
-      { title: "Tinklaraštis – Veiklų Erdvė" },
+      { title: "Tinklaraštis – Veiklų Pasaulis" },
       {
         name: "description",
         content:
           "Patarimai, kaip išsirinkti veiklą vaikui ar sau, ir naujienos apie veiklas Lietuvoje.",
       },
-      { property: "og:title", content: "Tinklaraštis – Veiklų Erdvė" },
+      { property: "og:title", content: "Tinklaraštis – Veiklų Pasaulis" },
       {
         property: "og:description",
         content: "Patarimai ir naujienos apie veiklas vaikams ir suaugusiems.",

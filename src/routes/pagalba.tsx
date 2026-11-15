@@ -16,13 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/pagalba")({
   head: () => ({
     meta: [
-      { title: "Pagalba – Veiklų Erdvė" },
+      { title: "Pagalba – Veiklų Pasaulis" },
       {
         name: "description",
         content:
-          "Atsakymai į dažniausius klausimus ir galimybė susisiekti su Veiklų Erdvės komanda.",
+          "Atsakymai į dažniausius klausimus ir galimybė susisiekti su Veiklų Pasaulio komanda.",
       },
-      { property: "og:title", content: "Pagalba – Veiklų Erdvė" },
+      { property: "og:title", content: "Pagalba – Veiklų Pasaulis" },
       {
         property: "og:description",
         content: "Atsakymai į dažniausius klausimus ir galimybė susisiekti.",
@@ -37,7 +37,7 @@ const FAQ: { heading: string; items: { q: string; a: string }[] }[] = [
     heading: "Ieškantiems veiklų",
     items: [
       {
-        q: "Ar naudotis Veiklų Erdve kainuoja?",
+        q: "Ar naudotis Veiklų Pasauliu kainuoja?",
         a: "Ne. Ieškoti veiklų ir jas išsaugoti galima nemokamai ir be paskyros. Už pačią veiklą mokate tiesiogiai jos vadovui.",
       },
       {

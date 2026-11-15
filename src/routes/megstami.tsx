@@ -8,9 +8,9 @@ import { useListings } from "@/lib/listings-store";
 export const Route = createFileRoute("/megstami")({
   head: () => ({
     meta: [
-      { title: "Mano mėgstamos veiklos – Veiklų Erdvė" },
+      { title: "Mano mėgstamos veiklos – Veiklų Pasaulis" },
       { name: "description", content: "Jūsų išsaugotos veiklos vienoje vietoje." },
-      { property: "og:title", content: "Mano mėgstamos veiklos – Veiklų Erdvė" },
+      { property: "og:title", content: "Mano mėgstamos veiklos – Veiklų Pasaulis" },
       { property: "og:description", content: "Jūsų išsaugotos veiklos vienoje vietoje." },
     ],
   }),

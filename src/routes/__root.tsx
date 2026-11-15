@@ -82,13 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Veiklų Erdvė – veiklos vaikams ir suaugusiems" },
+      { title: "Veiklų Pasaulis – veiklos vaikams ir suaugusiems" },
       {
         name: "description",
         content: "Raskite geriausias veiklas vaikams ir suaugusiems Vilniuje ir visoje Lietuvoje.",
       },
-      { name: "author", content: "Veiklų Erdvė" },
-      { property: "og:title", content: "Veiklų Erdvė – veiklos vaikams ir suaugusiems" },
+      { name: "author", content: "Veiklų Pasaulis" },
+      { property: "og:title", content: "Veiklų Pasaulis – veiklos vaikams ir suaugusiems" },
       {
         property: "og:description",
         content: "Raskite geriausias veiklas vaikams ir suaugusiems Vilniuje ir visoje Lietuvoje.",

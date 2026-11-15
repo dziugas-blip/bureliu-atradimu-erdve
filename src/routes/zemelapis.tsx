@@ -9,13 +9,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/zemelapis")({
   head: () => ({
     meta: [
-      { title: "Veiklų žemėlapis – Veiklų Erdvė" },
+      { title: "Veiklų žemėlapis – Veiklų Pasaulis" },
       {
         name: "description",
         content:
           "Veiklos vaikams ir suaugusiems Lietuvos žemėlapyje: raskite, kas vyksta arti jūsų.",
       },
-      { property: "og:title", content: "Veiklų žemėlapis – Veiklų Erdvė" },
+      { property: "og:title", content: "Veiklų žemėlapis – Veiklų Pasaulis" },
       {
         property: "og:description",
         content: "Veiklos vaikams ir suaugusiems Lietuvos žemėlapyje.",
