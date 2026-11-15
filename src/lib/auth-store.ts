@@ -66,6 +66,8 @@ export function useAuthReady(): boolean {
 export interface AuthResult {
   /** Lithuanian message to show the organiser, or undefined on success. */
   error?: string;
+  /** True when the browser is leaving for Google and will come back signed in. */
+  redirected?: boolean;
 }
 
 export type SignInMethod = { provider: "google" } | { email: string; password: string };
@@ -96,7 +98,7 @@ export async function signIn(method: SignInMethod, returnTo = "/ideti"): Promise
       redirect_uri: `${window.location.origin}${returnTo}`,
     });
     if (result.error) return { error: "Nepavyko prisijungti su Google. Bandykite dar kartą." };
-    return {};
+    return { redirected: "redirected" in result && Boolean(result.redirected) };
   }
   const { error } = await supabase.auth.signInWithPassword({
     email: method.email.trim(),

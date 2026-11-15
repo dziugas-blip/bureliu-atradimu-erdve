@@ -1,17 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { useSignedIn } from "@/lib/auth-store";
-import { useHydrated } from "@/lib/listings-store";
+import { useAuthReady, useSignedIn } from "@/lib/auth-store";
 
 /** Shows its children only to a signed-in organiser; everyone else is asked to register. */
 export function OrganizerGate({ children }: { children: ReactNode }) {
   const signedIn = useSignedIn();
-  const hydrated = useHydrated();
+  const ready = useAuthReady();
 
-  // Wait for hydration so a signed-in organiser doesn't see the gate flash while the
-  // stored session is being read.
-  if (!hydrated) return <div className="min-h-[60vh] bg-hero-wash" />;
+  // Wait until the stored session has been read so a signed-in organiser doesn't see the
+  // gate flash.
+  if (!ready) return <div className="min-h-[60vh] bg-hero-wash" />;
   if (signedIn) return children;
 
   return (

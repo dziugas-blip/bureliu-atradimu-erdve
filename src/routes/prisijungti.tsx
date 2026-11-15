@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
-import { type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GoogleSignInButton } from "@/components/site/GoogleSignInButton";
 import { Logo } from "@/components/site/Logo";
-import { signIn } from "@/lib/auth-store";
+import { signIn, signUp } from "@/lib/auth-store";
 import { saveProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/prisijungti")({
@@ -35,16 +36,43 @@ function AuthPage() {
   // Accounts are for organisers, so signing in leads straight to the add-activity form.
   const goOn = () => void navigate({ to: "/ideti" });
 
-  const onLogin = (e: FormEvent) => {
+  const [pending, setPending] = useState(false);
+
+  const onLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signIn();
-    goOn();
+    const form = new FormData(e.currentTarget);
+    setPending(true);
+    const { error } = await signIn({
+      email: String(form.get("email") ?? ""),
+      password: String(form.get("password") ?? ""),
+    });
+    setPending(false);
+    if (error) toast.error(error);
+    else goOn();
   };
-  const onRegister = (e: FormEvent<HTMLFormElement>) => {
+  const onRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const name = String(new FormData(e.currentTarget).get("name") ?? "").trim();
+    const form = new FormData(e.currentTarget);
+    const name = String(form.get("name") ?? "").trim();
+    setPending(true);
+    const result = await signUp({
+      name,
+      email: String(form.get("email") ?? ""),
+      password: String(form.get("password") ?? ""),
+    });
+    setPending(false);
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
     if (name) saveProfile({ name });
-    signIn();
+    if (result.needsConfirmation) {
+      toast.success("Patikrinkite el. paštą", {
+        description: "Atsiuntėme laišką su nuoroda. Paspaudę ją galėsite įdėti veiklą.",
+        duration: 15000,
+      });
+      return;
+    }
     goOn();
   };
 
@@ -59,10 +87,6 @@ function AuthPage() {
           <p className="mt-1 text-center text-sm text-muted-foreground">
             Paskyros reikia tik tiems, kas deda veiklas. Ieškoti veiklų ir jas išsaugoti galima be
             paskyros.
-          </p>
-          <p className="mt-4 rounded-lg bg-secondary px-3 py-2 text-center text-xs text-muted-foreground">
-            Bandomoji versija: paskyros dar nekuriamos, prisijungimas tik imituojamas šioje
-            naršyklėje.
           </p>
           <Tabs
             value={active}
@@ -79,13 +103,19 @@ function AuthPage() {
               <form onSubmit={onLogin} className="mt-4 space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="login-email">El. paštas</Label>
-                  <Input id="login-email" type="email" autoComplete="email" required />
+                  <Input id="login-email" name="email" type="email" autoComplete="email" required />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="login-pass">Slaptažodis</Label>
-                  <Input id="login-pass" type="password" autoComplete="current-password" required />
+                  <Input
+                    id="login-pass"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                  />
                 </div>
-                <Button type="submit" size="lg" className="w-full">
+                <Button type="submit" size="lg" className="w-full" disabled={pending}>
                   Prisijungti
                 </Button>
               </form>
@@ -100,19 +130,20 @@ function AuthPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="reg-email">El. paštas</Label>
-                  <Input id="reg-email" type="email" autoComplete="email" required />
+                  <Input id="reg-email" name="email" type="email" autoComplete="email" required />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="reg-pass">Slaptažodis</Label>
                   <Input
                     id="reg-pass"
+                    name="password"
                     type="password"
                     autoComplete="new-password"
                     minLength={8}
                     required
                   />
                 </div>
-                <Button type="submit" size="lg" className="w-full">
+                <Button type="submit" size="lg" className="w-full" disabled={pending}>
                   Sukurti vadovo paskyrą
                 </Button>
               </form>
