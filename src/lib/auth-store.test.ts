@@ -77,4 +77,13 @@ describe("organiser sign-in", () => {
     const result = await signUp({ name: "Rūta", email: "ruta@b.lt", password: "slaptazodis" });
     expect(result.error).toBe("Paskyra su šiuo el. paštu jau yra. Prisijunkite.");
   });
+
+  it("explains a rejected email address instead of a generic failure", async () => {
+    auth.signUp.mockResolvedValue({
+      data: { user: null, session: null },
+      error: { code: "email_address_invalid", message: "This email address is not allowed." },
+    });
+    const result = await signUp({ name: "Rūta", email: "ruta@example.com", password: "slaptazodis" });
+    expect(result.error).toBe("Šis el. pašto adresas netinka. Patikrinkite, ar jis įvestas teisingai.");
+  });
 });

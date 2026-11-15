@@ -83,6 +83,8 @@ export function authErrorMessage(error: { message?: string; code?: string } | nu
     return "Paskyra su šiuo el. paštu jau yra. Prisijunkite.";
   if (text.includes("weak_password") || text.includes("password should"))
     return "Slaptažodis per silpnas. Naudokite bent 8 simbolius.";
+  if (text.includes("email_address_invalid") || text.includes("email address is not allowed"))
+    return "Šis el. pašto adresas netinka. Patikrinkite, ar jis įvestas teisingai.";
   if (text.includes("rate limit") || text.includes("over_email_send_rate_limit"))
     return "Per daug bandymų. Palaukite kelias minutes ir bandykite dar kartą.";
   return "Nepavyko prisijungti. Bandykite dar kartą.";
