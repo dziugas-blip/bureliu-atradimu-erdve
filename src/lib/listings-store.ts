@@ -1,23 +1,22 @@
 import { useSyncExternalStore } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { listingToRow, rowToListing, type ListingData } from "./listings-db";
-import { SAMPLE_LISTINGS, type Listing } from "./listings";
+import type { Listing } from "./listings";
 import { deletePhotos } from "./photo-upload";
 
 /**
- * Activities from the database, shown before the built-in sample listings. Everyone can
+ * Activities from the database; the site shows nothing else. Everyone can
  * read them; only the signed-in organiser who owns a listing can change or delete it
  * (enforced by the database's row level security, not just here).
  */
-let dbListings: Listing[] = [];
-let combined: Listing[] = SAMPLE_LISTINGS;
+const NONE: Listing[] = [];
+let dbListings: Listing[] = NONE;
 let status: "idle" | "loading" | "ready" = "idle";
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
 function setListings(next: Listing[]) {
   dbListings = next;
-  combined = [...dbListings, ...SAMPLE_LISTINGS];
   emit();
 }
 
@@ -28,11 +27,10 @@ async function load() {
     .select("*")
     .order("created_at", { ascending: false });
   if (error) {
-    // The samples still show; a reload tries again.
+    // Nothing to show yet; a reload tries again.
     console.error("[listings] could not load", error);
   } else {
     dbListings = data.map(rowToListing);
-    combined = [...dbListings, ...SAMPLE_LISTINGS];
   }
   status = "ready";
   emit();
@@ -47,8 +45,8 @@ function subscribe(listener: () => void) {
 export function useListings(): Listing[] {
   return useSyncExternalStore(
     subscribe,
-    () => combined,
-    () => SAMPLE_LISTINGS,
+    () => dbListings,
+    () => NONE,
   );
 }
 

@@ -2,21 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ListingView } from "@/components/site/ListingView";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SAMPLE_LISTINGS } from "@/lib/listings";
 import { useListings, useListingsReady } from "@/lib/listings-store";
 
 export const Route = createFileRoute("/bureliai/$id")({
-  // Sample listings are known on the server; user-added ones live in the browser only.
-  loader: ({ params }) => {
-    const l = SAMPLE_LISTINGS.find((x) => x.id === params.id);
-    return { title: l?.title ?? null, summary: l?.shortDescription ?? null };
-  },
-  head: ({ loaderData }) => {
-    const title = loaderData?.title
-      ? `${loaderData.title} – Veiklų Pasaulis`
-      : "Veikla – Veiklų Pasaulis";
-    const description =
-      loaderData?.summary ?? "Veiklos aprašymas, tvarkaraštis, kaina ir kontaktai.";
+  // Listings are loaded from the database in the browser, so the page title stays generic.
+  head: () => {
+    const title = "Veikla – Veiklų Pasaulis";
+    const description = "Veiklos aprašymas, tvarkaraštis, kaina ir kontaktai.";
     return {
       meta: [
         { title },

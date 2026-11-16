@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_FILTERS, SAMPLE_LISTINGS, filterListings, normalizeWebsite } from "./listings";
+import { SAMPLE_LISTINGS } from "@/test/fixtures/sample-listings";
+import { DEFAULT_FILTERS, filterListings, normalizeWebsite } from "./listings";
 import { ALL_PLACES, districtsOf, formatPlace } from "./places";
 import { organizerIdOf } from "./profile-store";
 
