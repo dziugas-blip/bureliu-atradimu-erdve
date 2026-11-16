@@ -14,7 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      listings: {
+        Row: {
+          address: string
+          ages: string[]
+          audience: string
+          category: string
+          city: string
+          contact_name: string
+          created_at: string
+          description: string
+          district: string
+          email: string
+          gender: string
+          id: string
+          lat: number | null
+          lng: number | null
+          organizer_id: string
+          perks: string[]
+          phone: string
+          photos: string[]
+          price: number
+          schedule: Json
+          schedule_flexible: boolean
+          short_description: string
+          title: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address: string
+          ages?: string[]
+          audience: string
+          category: string
+          city: string
+          contact_name: string
+          created_at?: string
+          description: string
+          district?: string
+          email: string
+          gender: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          organizer_id?: string
+          perks?: string[]
+          phone: string
+          photos?: string[]
+          price: number
+          schedule?: Json
+          schedule_flexible?: boolean
+          short_description?: string
+          title: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          ages?: string[]
+          audience?: string
+          category?: string
+          city?: string
+          contact_name?: string
+          created_at?: string
+          description?: string
+          district?: string
+          email?: string
+          gender?: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          organizer_id?: string
+          perks?: string[]
+          phone?: string
+          photos?: string[]
+          price?: number
+          schedule?: Json
+          schedule_flexible?: boolean
+          short_description?: string
+          title?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: string
+          bio: string
+          headline: string
+          id: string
+          name: string
+          photo: string
+          updated_at: string
+        }
+        Insert: {
+          age?: string
+          bio?: string
+          headline?: string
+          id: string
+          name?: string
+          photo?: string
+          updated_at?: string
+        }
+        Update: {
+          age?: string
+          bio?: string
+          headline?: string
+          id?: string
+          name?: string
+          photo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
