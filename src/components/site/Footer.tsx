@@ -41,9 +41,17 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t">
-        <p className="container-page py-5 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Veiklų Pasaulis. Visos teisės saugomos.
-        </p>
+        <div className="container-page flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-5 text-xs text-muted-foreground">
+          <p>© {new Date().getFullYear()} Veiklų Pasaulis. Visos teisės saugomos.</p>
+          <nav className="flex flex-wrap gap-x-5 gap-y-1" aria-label="Teisinė informacija">
+            <Link to="/privatumas" className="hover:text-foreground">
+              Privatumo politika
+            </Link>
+            <Link to="/taisykles" className="hover:text-foreground">
+              Naudojimo taisyklės
+            </Link>
+          </nav>
+        </div>
       </div>
     </footer>
   );

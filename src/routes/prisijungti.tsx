@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
@@ -146,6 +146,17 @@ function AuthPage() {
                 <Button type="submit" size="lg" className="w-full" disabled={pending}>
                   Sukurti vadovo paskyrą
                 </Button>
+                <p className="text-center text-xs text-muted-foreground">
+                  Kurdami paskyrą sutinkate su{" "}
+                  <Link to="/taisykles" className="font-semibold text-primary hover:underline">
+                    naudojimo taisyklėmis
+                  </Link>{" "}
+                  ir{" "}
+                  <Link to="/privatumas" className="font-semibold text-primary hover:underline">
+                    privatumo politika
+                  </Link>
+                  .
+                </p>
               </form>
             </TabsContent>
           </Tabs>

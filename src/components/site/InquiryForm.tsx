@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { CheckCircle2, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
@@ -112,6 +113,12 @@ export function InquiryForm({ listingTitle }: { listingTitle: string }) {
       <Button type="submit" size="lg" className="w-full">
         <Send /> Siųsti užklausą
       </Button>
+      <p className="text-center text-xs text-muted-foreground">
+        Siųsdami sutinkate, kad jūsų duomenys būtų perduoti šios veiklos vadovui.{" "}
+        <Link to="/privatumas" className="font-semibold text-primary hover:underline">
+          Privatumo politika
+        </Link>
+      </p>
     </form>
   );
 }

@@ -27,7 +27,8 @@ import {
   type PerkId,
 } from "@/lib/listings";
 import { addListing, updateListing } from "@/lib/listings-store";
-import { ALL_PLACES, districtsOf } from "@/lib/places";
+import { geocodeAddress } from "@/lib/geocode";
+import { ALL_PLACES, CITY_COORDS, districtsOf } from "@/lib/places";
 import { LOCAL_ORGANIZER_ID, saveProfile, useProfile } from "@/lib/profile-store";
 import { fromScheduleSlots, invalidDays, toScheduleSlots, type WeekSchedule } from "@/lib/schedule";
 import { cn } from "@/lib/utils";
@@ -221,6 +222,8 @@ export function ListingForm({ editing }: { editing?: Listing }) {
   const [scheduleError, setScheduleError] = useState<string>();
   /** The validated listing being shown as a full-page preview, or null while editing. */
   const [preview, setPreview] = useState<ListingData | null>(null);
+  /** True while the address is being looked up, just before the listing is saved. */
+  const [publishing, setPublishing] = useState(false);
 
   // A new listing starts with the organiser's own name as the contact, once the stored
   // profile has been read.
@@ -293,7 +296,32 @@ export function ListingForm({ editing }: { editing?: Listing }) {
     };
   }
 
-  function publish(data: ListingData) {
+  /** Find where the address is, so the listing gets its own pin on the map. */
+  async function withCoordinates(data: ListingData): Promise<ListingData> {
+    // An edit that leaves the address alone keeps the position it already has.
+    if (
+      editing?.lat !== undefined &&
+      editing.lng !== undefined &&
+      editing.address === data.address &&
+      editing.city === data.city
+    ) {
+      return { ...data, lat: editing.lat, lng: editing.lng };
+    }
+    const found = await geocodeAddress(data.address, data.city);
+    if (found) return { ...data, ...found };
+    toast.info("Adreso žemėlapyje rasti nepavyko", {
+      description: CITY_COORDS[data.city]
+        ? "Veikla žemėlapyje bus rodoma miesto centre. Patikslinkite adresą redaguodami."
+        : "Veikla kol kas nebus rodoma žemėlapyje. Patikslinkite adresą redaguodami.",
+    });
+    return data;
+  }
+
+  async function publish(draft: ListingData) {
+    if (publishing) return;
+    setPublishing(true);
+    const data = await withCoordinates(draft);
+    setPublishing(false);
     const result = editing ? updateListing(editing.id, data) : addListing(data);
     if (!result) {
       toast.error("Šios veiklos nebėra, pakeitimų išsaugoti nepavyko");
@@ -316,7 +344,7 @@ export function ListingForm({ editing }: { editing?: Listing }) {
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     const data = validate();
-    if (data) publish(data);
+    if (data) void publish(data);
   }
 
   function openPreview() {
@@ -348,8 +376,9 @@ export function ListingForm({ editing }: { editing?: Listing }) {
               >
                 <ArrowLeft /> Grįžti prie redagavimo
               </Button>
-              <Button variant="teal" onClick={() => publish(preview)}>
-                {editing ? <Save /> : <Plus />} {editing ? "Išsaugoti dabar" : "Paskelbti dabar"}
+              <Button variant="teal" disabled={publishing} onClick={() => void publish(preview)}>
+                {editing ? <Save /> : <Plus />}{" "}
+                {publishing ? "Ieškoma vieta..." : editing ? "Išsaugoti dabar" : "Paskelbti dabar"}
               </Button>
             </div>
           </div>
@@ -659,8 +688,8 @@ export function ListingForm({ editing }: { editing?: Listing }) {
               <Button type="button" variant="outline" size="xl" onClick={openPreview}>
                 <Eye /> Peržiūrėti, kaip atrodo kitiems
               </Button>
-              <Button type="submit" size="xl" variant="teal">
-                {editing ? <Save /> : <Plus />} {publishLabel}
+              <Button type="submit" size="xl" variant="teal" disabled={publishing}>
+                {editing ? <Save /> : <Plus />} {publishing ? "Ieškoma vieta..." : publishLabel}
               </Button>
             </div>
           </form>

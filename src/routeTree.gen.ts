@@ -14,7 +14,9 @@ import { Route as IdetiRouteImport } from './routes/ideti'
 import { Route as MegstamiRouteImport } from './routes/megstami'
 import { Route as PagalbaRouteImport } from './routes/pagalba'
 import { Route as PrisijungtiRouteImport } from './routes/prisijungti'
+import { Route as PrivatumasRouteImport } from './routes/privatumas'
 import { Route as ProfilisRouteImport } from './routes/profilis'
+import { Route as TaisyklesRouteImport } from './routes/taisykles'
 import { Route as TinklarastisRouteImport } from './routes/tinklarastis'
 import { Route as ZemelapisRouteImport } from './routes/zemelapis'
 import { Route as BureliaiIndexRouteImport } from './routes/bureliai.index'
@@ -47,9 +49,19 @@ const PrisijungtiRoute = PrisijungtiRouteImport.update({
   path: '/prisijungti',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivatumasRoute = PrivatumasRouteImport.update({
+  id: '/privatumas',
+  path: '/privatumas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfilisRoute = ProfilisRouteImport.update({
   id: '/profilis',
   path: '/profilis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TaisyklesRoute = TaisyklesRouteImport.update({
+  id: '/taisykles',
+  path: '/taisykles',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TinklarastisRoute = TinklarastisRouteImport.update({
@@ -89,7 +101,9 @@ export interface FileRoutesByFullPath {
   '/megstami': typeof MegstamiRoute
   '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
+  '/privatumas': typeof PrivatumasRoute
   '/profilis': typeof ProfilisRoute
+  '/taisykles': typeof TaisyklesRoute
   '/tinklarastis': typeof TinklarastisRoute
   '/zemelapis': typeof ZemelapisRoute
   '/bureliai/$id': typeof BureliaiIdRoute
@@ -103,7 +117,9 @@ export interface FileRoutesByTo {
   '/megstami': typeof MegstamiRoute
   '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
+  '/privatumas': typeof PrivatumasRoute
   '/profilis': typeof ProfilisRoute
+  '/taisykles': typeof TaisyklesRoute
   '/tinklarastis': typeof TinklarastisRoute
   '/zemelapis': typeof ZemelapisRoute
   '/bureliai/$id': typeof BureliaiIdRoute
@@ -118,7 +134,9 @@ export interface FileRoutesById {
   '/megstami': typeof MegstamiRoute
   '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
+  '/privatumas': typeof PrivatumasRoute
   '/profilis': typeof ProfilisRoute
+  '/taisykles': typeof TaisyklesRoute
   '/tinklarastis': typeof TinklarastisRoute
   '/zemelapis': typeof ZemelapisRoute
   '/bureliai/$id': typeof BureliaiIdRoute
@@ -134,7 +152,9 @@ export interface FileRouteTypes {
     | '/megstami'
     | '/pagalba'
     | '/prisijungti'
+    | '/privatumas'
     | '/profilis'
+    | '/taisykles'
     | '/tinklarastis'
     | '/zemelapis'
     | '/bureliai/$id'
@@ -148,7 +168,9 @@ export interface FileRouteTypes {
     | '/megstami'
     | '/pagalba'
     | '/prisijungti'
+    | '/privatumas'
     | '/profilis'
+    | '/taisykles'
     | '/tinklarastis'
     | '/zemelapis'
     | '/bureliai/$id'
@@ -162,7 +184,9 @@ export interface FileRouteTypes {
     | '/megstami'
     | '/pagalba'
     | '/prisijungti'
+    | '/privatumas'
     | '/profilis'
+    | '/taisykles'
     | '/tinklarastis'
     | '/zemelapis'
     | '/bureliai/$id'
@@ -177,7 +201,9 @@ export interface RootRouteChildren {
   MegstamiRoute: typeof MegstamiRoute
   PagalbaRoute: typeof PagalbaRoute
   PrisijungtiRoute: typeof PrisijungtiRoute
+  PrivatumasRoute: typeof PrivatumasRoute
   ProfilisRoute: typeof ProfilisRoute
+  TaisyklesRoute: typeof TaisyklesRoute
   TinklarastisRoute: typeof TinklarastisRoute
   ZemelapisRoute: typeof ZemelapisRoute
   BureliaiIdRoute: typeof BureliaiIdRoute
@@ -223,11 +249,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrisijungtiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privatumas': {
+      id: '/privatumas'
+      path: '/privatumas'
+      fullPath: '/privatumas'
+      preLoaderRoute: typeof PrivatumasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profilis': {
       id: '/profilis'
       path: '/profilis'
       fullPath: '/profilis'
       preLoaderRoute: typeof ProfilisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/taisykles': {
+      id: '/taisykles'
+      path: '/taisykles'
+      fullPath: '/taisykles'
+      preLoaderRoute: typeof TaisyklesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tinklarastis': {
@@ -281,7 +321,9 @@ const rootRouteChildren: RootRouteChildren = {
   MegstamiRoute: MegstamiRoute,
   PagalbaRoute: PagalbaRoute,
   PrisijungtiRoute: PrisijungtiRoute,
+  PrivatumasRoute: PrivatumasRoute,
   ProfilisRoute: ProfilisRoute,
+  TaisyklesRoute: TaisyklesRoute,
   TinklarastisRoute: TinklarastisRoute,
   ZemelapisRoute: ZemelapisRoute,
   BureliaiIdRoute: BureliaiIdRoute,
