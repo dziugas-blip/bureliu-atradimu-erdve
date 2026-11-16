@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { isNewListing, listingToRow, rowToListing, type ListingRow } from "./listings-db";
-import { SAMPLE_LISTINGS } from "./listings";
+import { SAMPLE_LISTINGS } from "@/test/fixtures/sample-listings";
 
 const row: ListingRow = {
   id: "0b6d6a3e-1f0c-4d9a-9d9b-2a7c1e5f7a10",

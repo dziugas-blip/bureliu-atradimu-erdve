@@ -15,6 +15,13 @@
       "when": 1794852427078,
       "tag": "0001_photos_bucket_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794862027908,
+      "tag": "0002_message_rate_limits",
+      "breakpoints": true
     }
   ]
 }
