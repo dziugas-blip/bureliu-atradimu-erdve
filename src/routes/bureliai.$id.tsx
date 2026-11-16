@@ -3,7 +3,7 @@ import { ListingView } from "@/components/site/ListingView";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SAMPLE_LISTINGS } from "@/lib/listings";
-import { useHydrated, useListings } from "@/lib/listings-store";
+import { useListings, useListingsReady } from "@/lib/listings-store";
 
 export const Route = createFileRoute("/bureliai/$id")({
   // Sample listings are known on the server; user-added ones live in the browser only.
@@ -33,12 +33,12 @@ export const Route = createFileRoute("/bureliai/$id")({
 function ListingDetail() {
   const { id } = Route.useParams();
   const listings = useListings();
-  const hydrated = useHydrated();
+  const ready = useListingsReady();
   const listing = listings.find((l) => l.id === id);
 
   if (listing) return <ListingView listing={listing} />;
 
-  if (!hydrated) {
+  if (!ready) {
     return (
       <div className="container-page space-y-4 pt-10">
         <Skeleton className="h-8 w-2/3" />

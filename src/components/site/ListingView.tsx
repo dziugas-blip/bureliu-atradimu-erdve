@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { isNewListing } from "@/lib/listings-db";
 import { ArrowLeft, CalendarDays, Globe, Mail, MapPin, Phone, User, Users } from "lucide-react";
 import { formatPrice, listingImage, type Listing } from "@/lib/listings";
 import { formatPlace } from "@/lib/places";
@@ -34,7 +35,7 @@ export function ListingView({ listing }: { listing: Listing }) {
       <div className="mt-4 flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <CategoryBadge category={listing.category} />
-          {listing.userSubmitted && (
+          {isNewListing(listing) && (
             <span className="rounded-full bg-teal-soft px-2.5 py-1 text-xs font-semibold text-teal">
               Naujai įdėta
             </span>

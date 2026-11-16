@@ -1,13 +1,13 @@
 import { ImagePlus, X } from "lucide-react";
 import { useRef, useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
-import { fileToResizedDataUrl } from "@/lib/image-resize";
+import { uploadPhoto } from "@/lib/photo-upload";
 
 export const MAX_PHOTOS = 5;
 
 interface PhotoUploaderProps {
   id?: string;
-  /** Photos as data URLs. The first one is the cover. */
+  /** Public URLs of the uploaded photos. The first one is the cover. */
   photos: string[];
   onChange: (photos: string[]) => void;
 }
@@ -30,13 +30,16 @@ export function PhotoUploader({ id, photos, onChange }: PhotoUploaderProps) {
     let failed = 0;
     for (const file of files.slice(0, remaining)) {
       try {
-        added.push(await fileToResizedDataUrl(file));
+        added.push(await uploadPhoto(file));
       } catch {
         failed += 1;
       }
     }
     setBusy(false);
-    if (failed > 0) toast.error("Kai kurių failų nepavyko perskaityti kaip nuotraukų");
+    if (failed > 0)
+      toast.error("Kai kurių nuotraukų nepavyko įkelti", {
+        description: "Patikrinkite, ar tai nuotraukos failai, ir interneto ryšį.",
+      });
     if (added.length > 0) onChange([...photos, ...added]);
   }
 
@@ -56,10 +59,7 @@ export function PhotoUploader({ id, photos, onChange }: PhotoUploaderProps) {
       {photos.length > 0 && (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
           {photos.map((src, i) => (
-            <li
-              key={`${i}:${src.length}`}
-              className="relative overflow-hidden rounded-xl border bg-muted"
-            >
+            <li key={src} className="relative overflow-hidden rounded-xl border bg-muted">
               <img
                 src={src}
                 alt={`Nuotrauka ${i + 1}`}
@@ -92,7 +92,7 @@ export function PhotoUploader({ id, photos, onChange }: PhotoUploaderProps) {
         >
           <ImagePlus className="size-6" />
           {busy
-            ? "Ruošiamos nuotraukos..."
+            ? "Įkeliamos nuotraukos..."
             : photos.length === 0
               ? "Pasirinkti nuotraukas"
               : "Pridėti dar"}

@@ -1,100 +1,119 @@
 import { useSyncExternalStore } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { listingToRow, rowToListing, type ListingData } from "./listings-db";
 import { SAMPLE_LISTINGS, type Listing } from "./listings";
+import { deletePhotos } from "./photo-upload";
 
-const STORAGE_KEY = "bureliu-erdve:listings";
-
-let userListings: Listing[] = [];
+/**
+ * Activities from the database, shown before the built-in sample listings. Everyone can
+ * read them; only the signed-in organiser who owns a listing can change or delete it
+ * (enforced by the database's row level security, not just here).
+ */
+let dbListings: Listing[] = [];
 let combined: Listing[] = SAMPLE_LISTINGS;
-let loaded = false;
+let status: "idle" | "loading" | "ready" = "idle";
 const listeners = new Set<() => void>();
+const emit = () => listeners.forEach((l) => l());
 
-function load() {
-  if (loaded || typeof window === "undefined") return;
-  loaded = true;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    const parsed = raw ? (JSON.parse(raw) as Listing[]) : [];
-    if (Array.isArray(parsed)) {
-      userListings = parsed;
-      combined = [...userListings, ...SAMPLE_LISTINGS];
-    }
-  } catch {
-    userListings = [];
+function setListings(next: Listing[]) {
+  dbListings = next;
+  combined = [...dbListings, ...SAMPLE_LISTINGS];
+  emit();
+}
+
+async function load() {
+  status = "loading";
+  const { data, error } = await supabase
+    .from("listings")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) {
+    // The samples still show; a reload tries again.
+    console.error("[listings] could not load", error);
+  } else {
+    dbListings = data.map(rowToListing);
+    combined = [...dbListings, ...SAMPLE_LISTINGS];
   }
+  status = "ready";
+  emit();
 }
 
 function subscribe(listener: () => void) {
-  load();
+  if (status === "idle" && typeof window !== "undefined") void load();
   listeners.add(listener);
   return () => listeners.delete(listener);
 }
 
-function getSnapshot() {
-  load();
-  return combined;
-}
-
-function getServerSnapshot() {
-  return SAMPLE_LISTINGS;
-}
-
 export function useListings(): Listing[] {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return useSyncExternalStore(
+    subscribe,
+    () => combined,
+    () => SAMPLE_LISTINGS,
+  );
 }
 
 /**
- * Adds a listing. `saved` is false when the browser could not store it (storage full or
- * disabled); the listing then lasts only until the page is reloaded.
+ * False until the first load from the database has finished, so a page can wait instead
+ * of saying "not found" for a listing that is still on its way.
  */
-export function addListing(listing: Omit<Listing, "id" | "userSubmitted">): {
-  listing: Listing;
-  saved: boolean;
-} {
-  load();
-  const created: Listing = {
-    ...listing,
-    id: `burelis-${Date.now().toString(36)}`,
-    userSubmitted: true,
-  };
-  return { listing: created, saved: commit([created, ...userListings]) };
+export function useListingsReady(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    () => status === "ready",
+    () => false,
+  );
 }
 
-/** Replace the organiser's own listings and persist them. False if the browser refused. */
-function commit(next: Listing[]): boolean {
-  userListings = next;
-  combined = [...userListings, ...SAMPLE_LISTINGS];
-  let saved = true;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(userListings));
-  } catch {
-    // Storage full or disabled: the change lasts for this session only.
-    saved = false;
+export type SaveResult = { listing: Listing; error?: undefined } | { error: string };
+
+function saveError(error: { code?: string; message?: string }): string {
+  console.error("[listings] could not save", error);
+  if (error.code === "42501" || /row-level security/i.test(error.message ?? "")) {
+    return "Neturite teisės keisti šios veiklos. Prisijunkite iš naujo ir bandykite dar kartą.";
   }
-  listeners.forEach((l) => l());
-  return saved;
+  if (error.code === "PGRST116") return "Šios veiklos nebėra.";
+  return "Nepavyko išsaugoti. Patikrinkite interneto ryšį ir bandykite dar kartą.";
 }
 
-/**
- * Replace the content of a listing added from this browser. The built-in sample listings
- * are not editable. Returns null when there is no such listing.
- */
-export function updateListing(
-  id: string,
-  data: Omit<Listing, "id" | "userSubmitted">,
-): { listing: Listing; saved: boolean } | null {
-  load();
-  if (!userListings.some((l) => l.id === id)) return null;
-  const updated: Listing = { ...data, id, userSubmitted: true };
-  return {
-    listing: updated,
-    saved: commit(userListings.map((l) => (l.id === id ? updated : l))),
-  };
+/** Publishes a new activity under the signed-in organiser. */
+export async function addListing(data: ListingData): Promise<SaveResult> {
+  const { data: row, error } = await supabase
+    .from("listings")
+    .insert(listingToRow(data))
+    .select()
+    .single();
+  if (error) return { error: saveError(error) };
+  const listing = rowToListing(row);
+  setListings([listing, ...dbListings]);
+  return { listing };
 }
 
-/** Remove a listing added from this browser. Sample listings cannot be removed. */
-export function deleteListing(id: string) {
-  load();
-  commit(userListings.filter((l) => l.id !== id));
+/** Saves changes to one of the signed-in organiser's own activities. */
+export async function updateListing(id: string, data: ListingData): Promise<SaveResult> {
+  const { data: row, error } = await supabase
+    .from("listings")
+    .update(listingToRow(data))
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) return { error: saveError(error) };
+  const listing = rowToListing(row);
+  const before = dbListings.find((l) => l.id === id);
+  setListings(dbListings.map((l) => (l.id === id ? listing : l)));
+  // Photos taken off the listing are no longer shown anywhere.
+  const kept = new Set(listing.photos ?? []);
+  void deletePhotos((before?.photos ?? []).filter((url) => !kept.has(url)));
+  return { listing };
+}
+
+/** Deletes one of the signed-in organiser's own activities, and its photos. */
+export async function deleteListing(id: string): Promise<{ error?: string }> {
+  const before = dbListings.find((l) => l.id === id);
+  const { error } = await supabase.from("listings").delete().eq("id", id);
+  if (error) return { error: saveError(error) };
+  setListings(dbListings.filter((l) => l.id !== id));
+  void deletePhotos(before?.photos ?? []);
+  return {};
 }
 
 const noopSubscribe = () => () => {};

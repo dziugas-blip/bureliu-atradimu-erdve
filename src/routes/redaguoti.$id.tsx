@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ListingForm } from "@/components/site/ListingForm";
 import { OrganizerGate } from "@/components/site/OrganizerGate";
 import { Button } from "@/components/ui/button";
-import { useListings } from "@/lib/listings-store";
+import { useAuthUser } from "@/lib/auth-store";
+import { useListings, useListingsReady } from "@/lib/listings-store";
 
 export const Route = createFileRoute("/redaguoti/$id")({
   head: () => ({
@@ -13,12 +14,19 @@ export const Route = createFileRoute("/redaguoti/$id")({
 
 function EditListing() {
   const { id } = Route.useParams();
-  // Only listings added from this browser can be edited, never the built-in samples.
-  const listing = useListings().find((l) => l.id === id && l.userSubmitted);
+  const user = useAuthUser();
+  const ready = useListingsReady();
+  // Only the organiser's own listings can be edited, never the built-in samples or
+  // someone else's (the database refuses those changes too).
+  const listing = useListings().find(
+    (l) => l.id === id && user !== null && l.organizerId === user.id,
+  );
 
   return (
     <OrganizerGate>
-      {listing ? (
+      {!ready ? (
+        <div className="min-h-[60vh] bg-hero-wash" />
+      ) : listing ? (
         // The key resets the form if the organiser jumps straight to another listing.
         <ListingForm key={listing.id} editing={listing} />
       ) : (

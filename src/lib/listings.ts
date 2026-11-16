@@ -85,7 +85,10 @@ export interface Listing {
   image?: string;
   /** Photos uploaded by the owner, as data URLs. The first one is the cover. */
   photos?: string[];
+  /** True for listings stored in the database, false/absent for the built-in samples. */
   userSubmitted?: boolean;
+  /** When the listing was published (ISO timestamp); drives the "Nauja" badge. */
+  createdAt?: string;
 }
 
 export const ALL = "all";

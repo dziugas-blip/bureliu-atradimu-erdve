@@ -26,10 +26,11 @@ import {
   type Listing,
   type PerkId,
 } from "@/lib/listings";
+import type { ListingData } from "@/lib/listings-db";
 import { addListing, updateListing } from "@/lib/listings-store";
 import { geocodeAddress } from "@/lib/geocode";
 import { ALL_PLACES, CITY_COORDS, districtsOf } from "@/lib/places";
-import { LOCAL_ORGANIZER_ID, saveProfile, useProfile } from "@/lib/profile-store";
+import { saveProfile, useProfile } from "@/lib/profile-store";
 import { fromScheduleSlots, invalidDays, toScheduleSlots, type WeekSchedule } from "@/lib/schedule";
 import { cn } from "@/lib/utils";
 import { ListingCard } from "./ListingCard";
@@ -37,9 +38,6 @@ import { ListingView } from "./ListingView";
 import { MAX_PHOTOS, PhotoUploader } from "./PhotoUploader";
 import { PlaceCombobox } from "./PlaceCombobox";
 import { SchedulePicker } from "./SchedulePicker";
-
-/** Everything a listing holds except what the store assigns. */
-type ListingData = Omit<Listing, "id" | "userSubmitted">;
 
 const AUDIENCE_OPTIONS: Audience[] = ["Vaikams", "Suaugusiems", "Visiems"];
 const GENDER_OPTIONS: Gender[] = ["Visiems", "Berniukams", "Mergaitėms"];
@@ -222,7 +220,7 @@ export function ListingForm({ editing }: { editing?: Listing }) {
   const [scheduleError, setScheduleError] = useState<string>();
   /** The validated listing being shown as a full-page preview, or null while editing. */
   const [preview, setPreview] = useState<ListingData | null>(null);
-  /** True while the address is being looked up, just before the listing is saved. */
+  /** True while the address is looked up and the listing is saved. */
   const [publishing, setPublishing] = useState(false);
 
   // A new listing starts with the organiser's own name as the contact, once the stored
@@ -286,7 +284,6 @@ export function ListingForm({ editing }: { editing?: Listing }) {
       description: d.description,
       schedule: toScheduleSlots(week),
       ...(flexible ? { scheduleFlexible: true } : {}),
-      organizerId: LOCAL_ORGANIZER_ID,
       contactName: d.contactName,
       phone: d.phone,
       email: d.email,
@@ -321,19 +318,15 @@ export function ListingForm({ editing }: { editing?: Listing }) {
     if (publishing) return;
     setPublishing(true);
     const data = await withCoordinates(draft);
+    const result = editing ? await updateListing(editing.id, data) : await addListing(data);
     setPublishing(false);
-    const result = editing ? updateListing(editing.id, data) : addListing(data);
-    if (!result) {
-      toast.error("Šios veiklos nebėra, pakeitimų išsaugoti nepavyko");
+    if (result.error !== undefined) {
+      toast.error(result.error);
       return;
     }
     // First listing from a new organiser: start their public profile with the name they gave.
-    if (!profile.name) saveProfile({ name: data.contactName });
-    if (!result.saved) {
-      toast.warning(editing ? "Pakeitimai neišsaugoti" : "Veikla įdėta, bet neišsaugota", {
-        description: "Naršyklės atmintis pilna. Perkrovus puslapį pakeitimai dings.",
-      });
-    } else if (editing) {
+    if (!profile.name) void saveProfile({ name: data.contactName });
+    if (editing) {
       toast.success("Pakeitimai išsaugoti");
     } else {
       toast.success("Veikla įdėta!", { description: "Ji jau matoma veiklų sąraše." });
@@ -378,7 +371,7 @@ export function ListingForm({ editing }: { editing?: Listing }) {
               </Button>
               <Button variant="teal" disabled={publishing} onClick={() => void publish(preview)}>
                 {editing ? <Save /> : <Plus />}{" "}
-                {publishing ? "Ieškoma vieta..." : editing ? "Išsaugoti dabar" : "Paskelbti dabar"}
+                {publishing ? "Saugoma..." : editing ? "Išsaugoti dabar" : "Paskelbti dabar"}
               </Button>
             </div>
           </div>
@@ -387,7 +380,12 @@ export function ListingForm({ editing }: { editing?: Listing }) {
             clicked, so the heart or the enquiry form cannot act on an unpublished listing. */}
         <div inert>
           <ListingView
-            listing={{ ...preview, id: editing?.id ?? "perziura", userSubmitted: true }}
+            listing={{
+              ...preview,
+              id: editing?.id ?? "perziura",
+              userSubmitted: true,
+              createdAt: editing?.createdAt ?? new Date().toISOString(),
+            }}
           />
         </div>
       </>
@@ -400,6 +398,7 @@ export function ListingForm({ editing }: { editing?: Listing }) {
   const draft: Listing = {
     id: editing?.id ?? "perziura",
     userSubmitted: true,
+    createdAt: editing?.createdAt ?? new Date().toISOString(),
     title: values.title.trim() || "Veiklos pavadinimas",
     city: values.city,
     district: districts.includes(values.district) ? values.district : "",
@@ -689,7 +688,7 @@ export function ListingForm({ editing }: { editing?: Listing }) {
                 <Eye /> Peržiūrėti, kaip atrodo kitiems
               </Button>
               <Button type="submit" size="xl" variant="teal" disabled={publishing}>
-                {editing ? <Save /> : <Plus />} {publishing ? "Ieškoma vieta..." : publishLabel}
+                {editing ? <Save /> : <Plus />} {publishing ? "Saugoma..." : publishLabel}
               </Button>
             </div>
           </form>

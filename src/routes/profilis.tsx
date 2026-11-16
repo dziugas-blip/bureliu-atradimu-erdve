@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useAuthReady, useSignedIn } from "@/lib/auth-store";
-import { fileToResizedDataUrl } from "@/lib/image-resize";
+import { useAuthReady, useAuthUser, useSignedIn } from "@/lib/auth-store";
+import { uploadPhoto } from "@/lib/photo-upload";
 import { MyListings } from "@/components/site/MyListings";
 import {
-  LOCAL_ORGANIZER_ID,
   saveProfile,
+  useOrganizerProfile,
   useProfile,
   type OrganizerProfile,
 } from "@/lib/profile-store";
@@ -30,12 +30,17 @@ export const Route = createFileRoute("/profilis")({
 function EditProfile() {
   const signedIn = useSignedIn();
   const ready = useAuthReady();
+  const user = useAuthUser();
+  // undefined while the saved profile is still loading.
+  const loaded = useOrganizerProfile(user?.id ?? null) !== undefined;
   const stored = useProfile();
   const [draft, setDraft] = useState<OrganizerProfile>(stored);
   const [nameError, setNameError] = useState<string>();
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // The stored profile is only readable in the browser, so pick it up once it arrives.
+  // The saved profile arrives from the database after the page opens; pick it up then.
   useEffect(() => setDraft(stored), [stored]);
 
   const set = <K extends keyof OrganizerProfile>(key: K, value: OrganizerProfile[K]) =>
@@ -45,14 +50,19 @@ function EditProfile() {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    setUploading(true);
     try {
-      set("photo", await fileToResizedDataUrl(file, 480, 0.8));
+      set("photo", await uploadPhoto(file, 480, 0.8));
     } catch {
-      toast.error("Šio failo nepavyko perskaityti kaip nuotraukos");
+      toast.error("Nuotraukos įkelti nepavyko", {
+        description: "Patikrinkite, ar tai nuotraukos failas, ir interneto ryšį.",
+      });
+    } finally {
+      setUploading(false);
     }
   }
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const name = draft.name.trim();
     if (name.length < 2) {
@@ -61,17 +71,19 @@ function EditProfile() {
       return;
     }
     setNameError(undefined);
-    const saved = saveProfile({
+    setSaving(true);
+    const { error } = await saveProfile({
       ...draft,
       name,
       headline: draft.headline.trim(),
       bio: draft.bio.trim(),
     });
-    if (saved) toast.success("Profilis išsaugotas");
-    else toast.warning("Profilis neišsaugotas", { description: "Naršyklės atmintis pilna." });
+    setSaving(false);
+    if (error) toast.error(error);
+    else toast.success("Profilis išsaugotas");
   }
 
-  if (!ready) return <div className="min-h-[60vh] bg-hero-wash" />;
+  if (!ready || (signedIn && !loaded)) return <div className="min-h-[60vh] bg-hero-wash" />;
   if (!signedIn) {
     return (
       <div className="container-page flex flex-col items-center py-24 text-center">
@@ -97,7 +109,7 @@ function EditProfile() {
             </p>
           </div>
           <Button variant="outline" asChild>
-            <Link to="/vadovai/$id" params={{ id: LOCAL_ORGANIZER_ID }}>
+            <Link to="/vadovai/$id" params={{ id: user?.id ?? "" }}>
               Peržiūrėti viešą profilį
             </Link>
           </Button>
@@ -125,8 +137,18 @@ function EditProfile() {
                 onChange={onPhoto}
                 aria-label="Profilio nuotrauka"
               />
-              <Button type="button" variant="outline" onClick={() => fileRef.current?.click()}>
-                <ImagePlus /> {draft.photo ? "Pakeisti nuotrauką" : "Įkelti nuotrauką"}
+              <Button
+                type="button"
+                variant="outline"
+                disabled={uploading}
+                onClick={() => fileRef.current?.click()}
+              >
+                <ImagePlus />{" "}
+                {uploading
+                  ? "Įkeliama..."
+                  : draft.photo
+                    ? "Pakeisti nuotrauką"
+                    : "Įkelti nuotrauką"}
               </Button>
               {draft.photo && (
                 <Button type="button" variant="ghost" onClick={() => set("photo", "")}>
@@ -189,8 +211,8 @@ function EditProfile() {
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit" size="lg">
-              Išsaugoti profilį
+            <Button type="submit" size="lg" disabled={saving || uploading}>
+              {saving ? "Saugoma..." : "Išsaugoti profilį"}
             </Button>
           </div>
         </form>

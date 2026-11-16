@@ -5,10 +5,10 @@ export function fitWithin(width: number, height: number, maxSide: number) {
 }
 
 /**
- * Downscale a photo and re-encode it as a JPEG data URL.
- * Listings are kept in localStorage, which holds only a few megabytes, so originals are too big.
+ * Downscale a photo and re-encode it as a JPEG, so uploads stay small and fast even when
+ * the organiser picks a 10 MB phone picture.
  */
-export async function fileToResizedDataUrl(file: File, maxSide = 1000, quality = 0.75) {
+export async function fileToResizedBlob(file: File, maxSide = 1000, quality = 0.75): Promise<Blob> {
   const bitmap = await createImageBitmap(file);
   try {
     const { width, height } = fitWithin(bitmap.width, bitmap.height, maxSide);
@@ -21,7 +21,13 @@ export async function fileToResizedDataUrl(file: File, maxSide = 1000, quality =
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, width, height);
     ctx.drawImage(bitmap, 0, 0, width, height);
-    return canvas.toDataURL("image/jpeg", quality);
+    return await new Promise<Blob>((resolve, reject) =>
+      canvas.toBlob(
+        (blob) => (blob ? resolve(blob) : reject(new Error("Could not encode image"))),
+        "image/jpeg",
+        quality,
+      ),
+    );
   } finally {
     bitmap.close();
   }

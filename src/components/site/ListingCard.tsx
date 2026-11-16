@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { isNewListing } from "@/lib/listings-db";
 import { MapPin, Users } from "lucide-react";
 import { formatPrice, listingImage, type Gender, type Listing } from "@/lib/listings";
 import { cn } from "@/lib/utils";
@@ -32,7 +33,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
             className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
           <CategoryBadge category={listing.category} solid className="absolute left-3 top-3" />
-          {listing.userSubmitted && (
+          {isNewListing(listing) && (
             <span className="absolute bottom-3 left-3 rounded-full bg-teal px-2.5 py-1 text-xs font-semibold text-teal-foreground shadow-sm">
               Nauja
             </span>

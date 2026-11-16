@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GoogleSignInButton } from "@/components/site/GoogleSignInButton";
 import { Logo } from "@/components/site/Logo";
 import { signIn, signUp } from "@/lib/auth-store";
-import { saveProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/prisijungti")({
   validateSearch: zodValidator(
@@ -65,7 +64,6 @@ function AuthPage() {
       toast.error(result.error);
       return;
     }
-    if (name) saveProfile({ name });
     if (result.needsConfirmation) {
       toast.success("Patikrinkite el. paštą", {
         description: "Atsiuntėme laišką su nuoroda. Paspaudę ją galėsite įdėti veiklą.",

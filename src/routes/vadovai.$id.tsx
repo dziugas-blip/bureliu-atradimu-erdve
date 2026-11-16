@@ -3,9 +3,9 @@ import { ArrowLeft, UserRound } from "lucide-react";
 import { ListingCard } from "@/components/site/ListingCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSignedIn } from "@/lib/auth-store";
-import { useHydrated, useListings } from "@/lib/listings-store";
-import { LOCAL_ORGANIZER_ID, organizerIdOf, useProfile } from "@/lib/profile-store";
+import { useAuthUser } from "@/lib/auth-store";
+import { useListings, useListingsReady } from "@/lib/listings-store";
+import { organizerIdOf, useOrganizerProfile } from "@/lib/profile-store";
 
 export const Route = createFileRoute("/vadovai/$id")({
   head: () => ({
@@ -19,19 +19,17 @@ export const Route = createFileRoute("/vadovai/$id")({
 
 function OrganizerPage() {
   const { id } = Route.useParams();
-  const hydrated = useHydrated();
-  const signedIn = useSignedIn();
-  const localProfile = useProfile();
+  const listingsReady = useListingsReady();
+  const user = useAuthUser();
   const activities = useListings().filter((l) => organizerIdOf(l) === id);
-
-  const isLocal = id === LOCAL_ORGANIZER_ID;
-  // Only the organiser using this browser has a stored profile. Everyone else is known
-  // just by the contact name on their listings.
-  const profile = isLocal ? localProfile : null;
+  // undefined while loading; null for sample organisers and those without a profile.
+  const loadedProfile = useOrganizerProfile(id);
+  const profile = loadedProfile ?? null;
+  const isOwn = user !== null && user.id === id;
   const name = profile?.name || activities[0]?.contactName;
 
   if (!name) {
-    if (!hydrated) {
+    if (!listingsReady || loadedProfile === undefined) {
       return (
         <div className="container-page space-y-4 pt-10">
           <Skeleton className="h-8 w-1/2" />
@@ -86,7 +84,7 @@ function OrganizerPage() {
             <p className="mt-4 text-sm text-muted-foreground">Vadovas dar neparašė apie save.</p>
           )}
         </div>
-        {isLocal && signedIn && (
+        {isOwn && (
           <Button variant="outline" asChild>
             <Link to="/profilis">Redaguoti profilį</Link>
           </Button>

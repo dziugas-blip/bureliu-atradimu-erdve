@@ -14,6 +14,8 @@ const LEGACY_STORAGE_KEY = "veiklu-erdve:role";
 
 let signedIn = false;
 let ready = false;
+/** The signed-in organiser, or null. Kept as one object so hooks get a stable snapshot. */
+let user: AuthUser | null = null;
 let started = false;
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
@@ -28,9 +30,10 @@ function start() {
   }
   // Fires once with the stored session (INITIAL_SESSION), then on every sign-in/out.
   supabase.auth.onAuthStateChange((_event, session) => {
-    const next = Boolean(session);
-    if (next === signedIn && ready) return;
-    signedIn = next;
+    const next = toAuthUser(session?.user);
+    if (ready && next?.id === user?.id && next?.name === user?.name) return;
+    user = next;
+    signedIn = next !== null;
     ready = true;
     emit();
   });
@@ -40,6 +43,37 @@ function subscribe(listener: () => void) {
   start();
   listeners.add(listener);
   return () => listeners.delete(listener);
+}
+
+export interface AuthUser {
+  id: string;
+  /** Name given at registration or by Google; "" when unknown. */
+  name: string;
+}
+
+function toAuthUser(
+  raw: { id?: string; user_metadata?: Record<string, unknown> } | null | undefined,
+): AuthUser | null {
+  if (!raw?.id) return null;
+  const meta = raw.user_metadata ?? {};
+  const name = [meta["full_name"], meta["name"]].find((v) => typeof v === "string") as
+    string | undefined;
+  return { id: raw.id, name: name?.trim() ?? "" };
+}
+
+/** The signed-in organiser (id and name), or null. Null during server rendering. */
+export function useAuthUser(): AuthUser | null {
+  return useSyncExternalStore(
+    subscribe,
+    () => user,
+    () => null,
+  );
+}
+
+/** The signed-in organiser's id for code outside React, e.g. the data stores. */
+export function currentUserId(): string | null {
+  start();
+  return user?.id ?? null;
 }
 
 /** True for a signed-in organiser. Always false during server rendering. */

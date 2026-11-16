@@ -14,13 +14,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { formatPrice, listingImage } from "@/lib/listings";
-import { deleteListing, useListings } from "@/lib/listings-store";
+import { useAuthUser } from "@/lib/auth-store";
+import { deleteListing, useListings, useListingsReady } from "@/lib/listings-store";
 import { formatPlace } from "@/lib/places";
 
 /** The organiser's own activities, each with edit and delete. */
 export function MyListings() {
-  // Every listing added from this browser belongs to the organiser using it.
-  const mine = useListings().filter((l) => l.userSubmitted);
+  const user = useAuthUser();
+  const ready = useListingsReady();
+  const mine = useListings().filter((l) => user !== null && l.organizerId === user.id);
 
   return (
     <section className="mt-10">
@@ -40,7 +42,9 @@ export function MyListings() {
         </Button>
       </div>
 
-      {mine.length === 0 ? (
+      {!ready ? (
+        <p className="mt-4 text-sm text-muted-foreground">Kraunama...</p>
+      ) : mine.length === 0 ? (
         <p className="mt-4 rounded-2xl border border-dashed px-5 py-8 text-center text-sm text-muted-foreground">
           Dar neįdėjote nė vienos veiklos.
         </p>
@@ -91,9 +95,10 @@ export function MyListings() {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Atšaukti</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => {
-                          deleteListing(l.id);
-                          toast.success("Veikla ištrinta");
+                        onClick={async () => {
+                          const { error } = await deleteListing(l.id);
+                          if (error) toast.error(error);
+                          else toast.success("Veikla ištrinta");
                         }}
                       >
                         Ištrinti
