@@ -115,7 +115,7 @@ export function InquiryForm({ listingTitle }: { listingTitle: string }) {
       </Button>
       <p className="text-center text-xs text-muted-foreground">
         Siųsdami sutinkate, kad jūsų duomenys būtų perduoti šios veiklos vadovui.{" "}
-        <Link to="/privatumas" className="font-semibold text-primary hover:underline">
+        <Link to="/privatumo-politika" className="font-semibold text-primary hover:underline">
           Privatumo politika
         </Link>
       </p>

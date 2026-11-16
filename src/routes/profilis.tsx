@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthReady, useAuthUser, useSignedIn } from "@/lib/auth-store";
 import { uploadPhoto } from "@/lib/photo-upload";
+import { DeleteAccount } from "@/components/site/DeleteAccount";
 import { MyListings } from "@/components/site/MyListings";
 import {
   saveProfile,
@@ -218,6 +219,8 @@ function EditProfile() {
         </form>
 
         <MyListings />
+
+        <DeleteAccount />
       </div>
     </div>
   );

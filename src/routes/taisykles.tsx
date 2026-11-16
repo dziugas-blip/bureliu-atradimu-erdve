@@ -59,7 +59,7 @@ function Terms() {
           </li>
           <li>
             Skelbime nurodyti kontaktai yra vieši. Daugiau apie duomenis skaitykite{" "}
-            <Link to="/privatumas">privatumo politikoje</Link>.
+            <Link to="/privatumo-politika">privatumo politikoje</Link>.
           </li>
         </ul>
       </LegalSection>

@@ -37,12 +37,13 @@ export function LegalSection({ title, children }: { title: string; children: Rea
 
 /** Who runs the site and how to reach them, or an honest note that it is still missing. */
 export function OwnerContact() {
-  if (!SITE_OWNER.name || !SITE_OWNER.email) {
-    return <p>Valdytojo pavadinimas ir kontaktai bus paskelbti čia prieš svetainės paleidimą.</p>;
+  const email = <a href={`mailto:${SITE_OWNER.email}`}>{SITE_OWNER.email}</a>;
+  if (!SITE_OWNER.name) {
+    return <p>Veiklų Pasaulis, el. paštas {email}. Valdytojo rekvizitai bus paskelbti čia.</p>;
   }
   return (
     <p>
-      {SITE_OWNER.name}, el. paštas <a href={`mailto:${SITE_OWNER.email}`}>{SITE_OWNER.email}</a>.
+      {SITE_OWNER.name}, el. paštas {email}.
     </p>
   );
 }

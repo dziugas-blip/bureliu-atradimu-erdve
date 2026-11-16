@@ -1,13 +1,13 @@
 /**
  * Who runs the site. Shown on the privacy policy and terms pages.
- * Fill in `name` and `email` before launch: until then those pages say the details are
- * still to be published, which is not good enough for a public site.
+ * Fill in `name` before launch: the data protection rules require naming who controls
+ * the data, and until then the pages show only the contact email.
  */
 export const SITE_OWNER = {
-  /** Company name with legal form and code, or the person's full name. */
+  /** Company name with legal form and code, or the person's full name. Still to fill in. */
   name: "",
   /** Address people write to about their data or the terms. */
-  email: "",
+  email: "veiklupasaulis@gmail.com",
 };
 
 /** Date the legal pages were last changed, shown to readers. */

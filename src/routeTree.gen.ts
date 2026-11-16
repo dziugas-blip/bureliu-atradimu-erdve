@@ -15,6 +15,7 @@ import { Route as MegstamiRouteImport } from './routes/megstami'
 import { Route as PagalbaRouteImport } from './routes/pagalba'
 import { Route as PrisijungtiRouteImport } from './routes/prisijungti'
 import { Route as PrivatumasRouteImport } from './routes/privatumas'
+import { Route as PrivatumoPolitikaRouteImport } from './routes/privatumo-politika'
 import { Route as ProfilisRouteImport } from './routes/profilis'
 import { Route as TaisyklesRouteImport } from './routes/taisykles'
 import { Route as TinklarastisRouteImport } from './routes/tinklarastis'
@@ -52,6 +53,11 @@ const PrisijungtiRoute = PrisijungtiRouteImport.update({
 const PrivatumasRoute = PrivatumasRouteImport.update({
   id: '/privatumas',
   path: '/privatumas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivatumoPolitikaRoute = PrivatumoPolitikaRouteImport.update({
+  id: '/privatumo-politika',
+  path: '/privatumo-politika',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfilisRoute = ProfilisRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
   '/privatumas': typeof PrivatumasRoute
+  '/privatumo-politika': typeof PrivatumoPolitikaRoute
   '/profilis': typeof ProfilisRoute
   '/taisykles': typeof TaisyklesRoute
   '/tinklarastis': typeof TinklarastisRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
   '/privatumas': typeof PrivatumasRoute
+  '/privatumo-politika': typeof PrivatumoPolitikaRoute
   '/profilis': typeof ProfilisRoute
   '/taisykles': typeof TaisyklesRoute
   '/tinklarastis': typeof TinklarastisRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/pagalba': typeof PagalbaRoute
   '/prisijungti': typeof PrisijungtiRoute
   '/privatumas': typeof PrivatumasRoute
+  '/privatumo-politika': typeof PrivatumoPolitikaRoute
   '/profilis': typeof ProfilisRoute
   '/taisykles': typeof TaisyklesRoute
   '/tinklarastis': typeof TinklarastisRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/pagalba'
     | '/prisijungti'
     | '/privatumas'
+    | '/privatumo-politika'
     | '/profilis'
     | '/taisykles'
     | '/tinklarastis'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/pagalba'
     | '/prisijungti'
     | '/privatumas'
+    | '/privatumo-politika'
     | '/profilis'
     | '/taisykles'
     | '/tinklarastis'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/pagalba'
     | '/prisijungti'
     | '/privatumas'
+    | '/privatumo-politika'
     | '/profilis'
     | '/taisykles'
     | '/tinklarastis'
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   PagalbaRoute: typeof PagalbaRoute
   PrisijungtiRoute: typeof PrisijungtiRoute
   PrivatumasRoute: typeof PrivatumasRoute
+  PrivatumoPolitikaRoute: typeof PrivatumoPolitikaRoute
   ProfilisRoute: typeof ProfilisRoute
   TaisyklesRoute: typeof TaisyklesRoute
   TinklarastisRoute: typeof TinklarastisRoute
@@ -254,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/privatumas'
       fullPath: '/privatumas'
       preLoaderRoute: typeof PrivatumasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privatumo-politika': {
+      id: '/privatumo-politika'
+      path: '/privatumo-politika'
+      fullPath: '/privatumo-politika'
+      preLoaderRoute: typeof PrivatumoPolitikaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profilis': {
@@ -322,6 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   PagalbaRoute: PagalbaRoute,
   PrisijungtiRoute: PrisijungtiRoute,
   PrivatumasRoute: PrivatumasRoute,
+  PrivatumoPolitikaRoute: PrivatumoPolitikaRoute,
   ProfilisRoute: ProfilisRoute,
   TaisyklesRoute: TaisyklesRoute,
   TinklarastisRoute: TinklarastisRoute,

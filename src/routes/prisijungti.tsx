@@ -36,6 +36,8 @@ function AuthPage() {
   const goOn = () => void navigate({ to: "/ideti" });
 
   const [pending, setPending] = useState(false);
+  /** Registration needs explicit agreement to the terms and privacy policy. */
+  const [agreed, setAgreed] = useState(false);
 
   const onLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -120,8 +122,43 @@ function AuthPage() {
             </TabsContent>
 
             <TabsContent value="registruotis">
-              <GoogleSignInButton className="mt-4" onSignedIn={goOn} />
-              <form onSubmit={onRegister} className="mt-4 space-y-4">
+              <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-lg border bg-secondary/60 p-3 text-sm">
+                <input
+                  type="checkbox"
+                  name="agree"
+                  form="register-form"
+                  required
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 cursor-pointer accent-primary"
+                />
+                <span>
+                  Sutinku su{" "}
+                  <Link
+                    to="/taisykles"
+                    target="_blank"
+                    className="font-semibold text-primary hover:underline"
+                  >
+                    naudojimo taisyklėmis
+                  </Link>{" "}
+                  ir{" "}
+                  <Link
+                    to="/privatumo-politika"
+                    target="_blank"
+                    className="font-semibold text-primary hover:underline"
+                  >
+                    privatumo politika
+                  </Link>
+                  .
+                </span>
+              </label>
+              <GoogleSignInButton
+                className="mt-4"
+                onSignedIn={goOn}
+                disabled={!agreed}
+                disabledReason="Pirmiausia pažymėkite, kad sutinkate su taisyklėmis"
+              />
+              <form id="register-form" onSubmit={onRegister} className="mt-4 space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="reg-name">Vardas ir pavardė</Label>
                   <Input id="reg-name" name="name" autoComplete="name" required />
@@ -144,17 +181,6 @@ function AuthPage() {
                 <Button type="submit" size="lg" className="w-full" disabled={pending}>
                   Sukurti vadovo paskyrą
                 </Button>
-                <p className="text-center text-xs text-muted-foreground">
-                  Kurdami paskyrą sutinkate su{" "}
-                  <Link to="/taisykles" className="font-semibold text-primary hover:underline">
-                    naudojimo taisyklėmis
-                  </Link>{" "}
-                  ir{" "}
-                  <Link to="/privatumas" className="font-semibold text-primary hover:underline">
-                    privatumo politika
-                  </Link>
-                  .
-                </p>
               </form>
             </TabsContent>
           </Tabs>

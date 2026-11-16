@@ -6,11 +6,20 @@ import { cn } from "@/lib/utils";
 interface GoogleSignInButtonProps {
   /** Called after signing in, e.g. to move on to the next page. */
   onSignedIn?: () => void;
+  /** E.g. until the terms have been accepted. */
+  disabled?: boolean;
+  /** Shown as a tooltip while disabled, saying what to do first. */
+  disabledReason?: string;
   className?: string;
 }
 
 /** Signs the organiser in with their Google account. */
-export function GoogleSignInButton({ onSignedIn, className }: GoogleSignInButtonProps) {
+export function GoogleSignInButton({
+  onSignedIn,
+  disabled,
+  disabledReason,
+  className,
+}: GoogleSignInButtonProps) {
   const [pending, setPending] = useState(false);
 
   async function onClick() {
@@ -27,10 +36,11 @@ export function GoogleSignInButton({ onSignedIn, className }: GoogleSignInButton
     <button
       type="button"
       onClick={onClick}
-      disabled={pending}
+      disabled={pending || disabled}
       aria-busy={pending}
+      title={disabled ? disabledReason : undefined}
       className={cn(
-        "inline-flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-lg border bg-background px-4 text-sm font-semibold shadow-sm outline-none transition-colors hover:border-foreground/60 hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-wait disabled:opacity-70",
+        "inline-flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-lg border bg-background px-4 text-sm font-semibold shadow-sm outline-none transition-colors hover:border-foreground/60 hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 aria-busy:cursor-wait",
         className,
       )}
     >
