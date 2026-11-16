@@ -8,6 +8,13 @@
       "when": 1794852347444,
       "tag": "0000_create_listings_and_profiles",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794852427078,
+      "tag": "0001_photos_bucket_policies",
+      "breakpoints": true
     }
   ]
 }
