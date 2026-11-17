@@ -1,70 +1,46 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const m = vi.hoisted(() => ({
-  invoke: vi.fn(),
-  ownListings: [] as { id: string }[],
-  files: [] as { name: string }[],
-  remove: vi.fn(),
-  deleteListing: vi.fn(),
-  saveProfile: vi.fn(),
+  deleteAccount: vi.fn(),
   signOut: vi.fn(),
+  userId: "user-1" as string | null,
 }));
 
-vi.mock("@/integrations/supabase/client", () => ({
-  supabase: {
-    functions: { invoke: m.invoke },
-    from: () => ({
-      select: () => ({ eq: async () => ({ data: m.ownListings, error: null }) }),
-    }),
-    storage: {
-      from: () => ({ list: async () => ({ data: m.files }), remove: m.remove }),
-    },
-  },
-}));
-vi.mock("./auth-store", () => ({ currentUserId: () => "user-1", signOut: m.signOut }));
-vi.mock("./listings-store", () => ({ deleteListing: m.deleteListing }));
-vi.mock("./profile-store", () => ({ saveProfile: m.saveProfile }));
+vi.mock("./account.functions", () => ({ deleteAccount: m.deleteAccount }));
+vi.mock("./auth-store", () => ({ currentUserId: () => m.userId, signOut: m.signOut }));
 
 import { deleteMyAccount } from "./account";
 
 beforeEach(() => {
   vi.clearAllMocks();
-  m.deleteListing.mockResolvedValue({});
-  m.saveProfile.mockResolvedValue({});
+  m.userId = "user-1";
 });
 
 describe("deleteMyAccount", () => {
-  it("uses the server function when it exists, and signs out", async () => {
-    m.invoke.mockResolvedValue({ error: null });
+  it("deletes everything on the server, then signs out", async () => {
+    m.deleteAccount.mockResolvedValue({ ok: true });
     expect(await deleteMyAccount()).toEqual({ loginDeleted: true });
-    expect(m.deleteListing).not.toHaveBeenCalled();
+    expect(m.deleteAccount).toHaveBeenCalledTimes(1);
     expect(m.signOut).toHaveBeenCalled();
   });
 
-  it("without the server function, deletes listings, blanks the profile and clears photos", async () => {
-    m.invoke.mockResolvedValue({ error: new Error("Function not found") });
-    m.ownListings = [{ id: "a" }, { id: "b" }];
-    m.files = [{ name: "x.jpg" }];
-    expect(await deleteMyAccount()).toEqual({ loginDeleted: false });
-    expect(m.deleteListing).toHaveBeenCalledWith("a");
-    expect(m.deleteListing).toHaveBeenCalledWith("b");
-    expect(m.saveProfile).toHaveBeenCalledWith({
-      name: "",
-      headline: "",
-      age: "",
-      bio: "",
-      photo: "",
-    });
-    expect(m.remove).toHaveBeenCalledWith(["user-1/x.jpg"]);
-    expect(m.signOut).toHaveBeenCalled();
-  });
-
-  it("stops and stays signed in when a listing cannot be deleted", async () => {
-    m.invoke.mockResolvedValue({ error: new Error("Function not found") });
-    m.ownListings = [{ id: "a" }];
-    m.deleteListing.mockResolvedValue({ error: "nepavyko" });
+  it("returns an error and stays signed in when the server stops part-way", async () => {
+    m.deleteAccount.mockResolvedValue({ ok: false, step: "photos" });
     const result = await deleteMyAccount();
     expect(result.error).toBeDefined();
+    expect(result.loginDeleted).toBeUndefined();
     expect(m.signOut).not.toHaveBeenCalled();
+  });
+
+  it("returns an error when the request fails", async () => {
+    m.deleteAccount.mockRejectedValue(new Error("Unauthorized"));
+    expect((await deleteMyAccount()).error).toBeDefined();
+    expect(m.signOut).not.toHaveBeenCalled();
+  });
+
+  it("does nothing when nobody is signed in", async () => {
+    m.userId = null;
+    expect((await deleteMyAccount()).error).toBeDefined();
+    expect(m.deleteAccount).not.toHaveBeenCalled();
   });
 });
