@@ -8,6 +8,6 @@
 - [x] Launch 2: database safety rules (checks, 20/day, immutable owner/created_at, indexes)
 - [x] Launch 3: photos bucket 2 MB + image types only
 - [x] Launch 4: auth — email confirmation on, leaked-password check on (min length 8 is a user setting)
-- [ ] Launch 5: advisors + security headers
+- [x] Launch 5: advisors fixed + security headers on the published site
 - [ ] send-inquiry + send-help server code and form wiring — blocked: needs email sender domain
 - [ ] Remove "Bandomoji versija" notes from both forms — together with wiring

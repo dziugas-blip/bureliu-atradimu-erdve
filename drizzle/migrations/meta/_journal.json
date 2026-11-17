@@ -36,6 +36,13 @@
       "when": 1794926817255,
       "tag": "0004_photos_image_types_only",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794926859894,
+      "tag": "0005_message_rate_limits_explicit_deny",
+      "breakpoints": true
     }
   ]
 }
