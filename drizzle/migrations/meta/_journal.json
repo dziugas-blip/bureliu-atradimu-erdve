@@ -29,6 +29,13 @@
       "when": 1794926696241,
       "tag": "0003_listing_profile_safety_rules",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794926817255,
+      "tag": "0004_photos_image_types_only",
+      "breakpoints": true
     }
   ]
 }
